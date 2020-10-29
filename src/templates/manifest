@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:bb="http://www.blackboard.com/content-packaging/" identifier="${manifest.id}">
+    <organizations/>
+    <resources>
+        % for resource in manifest.resources:
+        <resource identifier="${resource.id}" type="${resource.type}" xml:base="${resource.id}" bb:file="${resource.id}.dat" bb:title="${resource.title}"/>
+        % endfor
+    </resources>
+</manifest>
