@@ -59,7 +59,7 @@
                 <qmd_instructornotes></qmd_instructornotes>
             </sectionmetadata>
             % for question in p.questions:
-            ${question.content}
+${question.content}
             % endfor
         </section>
     </assessment>
