@@ -1,0 +1,21 @@
+# Sample file with only one question.
+
+.filename TwoQuestions
+
+.pool TheOne
+
+.question
+    .text What is the best colour in the world?
+    .option red
+    .option blue
+    .option green
+    .answer purple!!!
+    .option yellow
+
+.question
+    .text The capital of Switzerland is:
+    .option Zurich
+    .answer Bern
+    .option Geneva
+    .option Basel
+    .option Chur
