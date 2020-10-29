@@ -1,0 +1,13 @@
+# Sample file with only one question.
+
+.filename OneQuestion_tex
+
+.pool TheOne
+
+.question
+    .text What is the best colour in the world, where $x =1$ and $e^{i \pi} + 1 = 0$?
+    .option rgb $(255, 0, 0)$
+    .option blue
+    .option green
+    .answer purple!!!
+    .option yellow
