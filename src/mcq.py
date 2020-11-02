@@ -25,7 +25,7 @@ class Mcq:
             self.options = options
             self.correctid = correctid
 
-    def render(self, counter, idgen):
+    def render(self, counter, idgen, renderer):
         """
         Render a question 'in house'.
         """
@@ -38,10 +38,12 @@ class Mcq:
                 odata.append(self.OptionRenderData(id = correctid, text = option))
             else:
                 odata.append(self.OptionRenderData(id = uuid.uuid4().hex, text = option))
+        for option in odata: 
+            option.text = renderer.render_text(option.text)
         data = self.RenderData(
             title = "Q" + str(counter), 
             id = idgen(),
-            stem = self.stem,
+            stem = renderer.render_text(self.stem),
             options = odata,
             correctid = correctid
         )

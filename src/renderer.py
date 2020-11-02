@@ -1,6 +1,8 @@
 from mako.template import Template
 import zipfile
 import pathlib
+import mistletoe
+import html
 
 # These helper classes have the correct attributes to be picked up by the XML templates.
 
@@ -71,7 +73,7 @@ class Renderer:
 
     def _render_pool(self, counter, pool):
         questions = [ 
-            RenderedQuestion(q.render(c+1, self.bbid)) 
+            RenderedQuestion(q.render(c+1, self.bbid, self)) 
             for (c, q) in enumerate(pool.questions) 
         ]
         template = Template(filename = template_filename("pool"))
@@ -79,3 +81,24 @@ class Renderer:
         datid = Resource(counter + 1, None, None).id
         print("writing " + datid + ".dat")
         self.z.writestr(datid + ".dat", data)
+
+    def render_text(self, text):
+        """
+        Render a block of text:
+          1. Convert markdown to HTML.
+          2. HTML escape the whole thing.
+          3. Remove the trailing newline.
+
+        In step 1, if the whole thing is a single paragraph, then we do not want to wrap it
+        in p tags.
+        """
+        ast = mistletoe.Document(text)
+        # check if we want to 'un-paragraph' it
+        if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
+            ast.children = ast.children[0].children
+        ht = mistletoe.HTMLRenderer().render(ast)
+        escaped = html.escape(ht)
+        if escaped[-1] == '\n':
+            return escaped[:-1]
+        else:
+            return escaped
