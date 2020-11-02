@@ -2,3 +2,4 @@ __pycache__
 samples/*.zip
 samples/*.png
 samples/out
+tmp/
