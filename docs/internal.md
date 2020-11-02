@@ -11,3 +11,44 @@ The general format can be seen in the `manifest` template. Resource identifiers 
   * `assessment/x-bb-qti-pool` for packages
   * `resource/x-mhhe-course-cx` for pools
 
+## How embedded tex is handled
+
+The `.dat` file contains the following code:
+
+    &lt;img src="
+    @X@EmbeddedFile.requestUrlStub@X@bbcswebdav/xid-{I}_1"
+    style="vertical-align:middle;" width="{W}" height="{H}" alt="{A}"
+    &gt;
+
+where W/H are the width/height of the image, A is the alt text (source string) and I is the id.
+An example id is `1000002`. The counter starts at 1000002 because `-01` is needed for the folder.
+
+In the zip file, under `csfiles/home_dir`, there are the following:
+
+  * `LaTeX__xid-1000001_1.xml` with the contents
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<lom>
+    <relation>
+        <resource>
+            <identifier>1000001_1#/courses/{PACKAGE}/LaTeX</identifier>
+        </resource>
+    </relation>
+</lom>
+```
+
+  * A folder `LaTeX__xid-{I}` with, for each file,
+    * The file itself as `{NAME}__xid-{ID}_1.png`.
+    * A file `{NAME}__xid-{ID}_1.png.xml` with the contents
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<lom>
+    <relation>
+        <resource>
+            <identifier>{ID}#/courses/OneQuestion_tex/LaTeX__xid-1000001_1\{NAME}__xid-{ID}_1.png</identifier>
+        </resource>
+    </relation>
+</lom>
+```

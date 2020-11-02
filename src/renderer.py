@@ -4,6 +4,8 @@ import pathlib
 import mistletoe
 import html
 
+from mistletoe_latex import HTMLRendererWithTex
+
 # These helper classes have the correct attributes to be picked up by the XML templates.
 
 class Resource:
@@ -96,7 +98,8 @@ class Renderer:
         # check if we want to 'un-paragraph' it
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
             ast.children = ast.children[0].children
-        ht = mistletoe.HTMLRenderer().render(ast)
+        #ht = mistletoe.HTMLRenderer().render(ast)
+        ht = HTMLRendererWithTex().render(ast)
         escaped = html.escape(ht)
         if escaped[-1] == '\n':
             return escaped[:-1]
