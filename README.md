@@ -12,3 +12,5 @@ This project currently requires the following, besides system packages:
   * `mako`, a template engine (`pip install mako`)
 
 Although a copy of the original file is currently around in `BlackboardQuiz.py` which requires sympy and a few other things (and so indirectly the whole NumPy stack), this is not needed for the main program.
+
+TeX must be installed to run the program, with both `latex` and `dvipng` on the `PATH`.
