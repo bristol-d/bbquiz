@@ -41,7 +41,7 @@ class Renderer:
 
     def bbid(self):
         self._bbid += 1
-        return self._bbid
+        return "_" + str(self._bbid) + "_1"
 
     def render(self):
         self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w", 

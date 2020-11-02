@@ -2,7 +2,6 @@ import BBparser as parser
 import mcq
 from renderer import Renderer
 
-# import BlackboardQuiz
 import sys
 import re
 
@@ -42,5 +41,8 @@ except OSError:
     print(f"I/O error on file {sys.argv[1]}")
     exit(3)
 
-render(package)
-#renderBB(package)
+if len(sys.argv) >= 3 and sys.argv[2] == '-o':
+    import BlackboardQuiz
+    renderBB(package)
+else:
+    render(package)
