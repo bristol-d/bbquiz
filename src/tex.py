@@ -1,15 +1,21 @@
 import subprocess
 import os
 import pathlib
-
+import hashlib
 class Tex:
     """
     Functions for running Tex.
     This class is based off sympy/printing/preview.py which is BSD licenced.
     """
 
-    def __init__(self, exe = 'latex', preamble = None):
+    def __init__(self, exe = 'latex', preamble = None, cwd = None):
         self.exe = exe
+        if cwd is None:
+            self.cwd = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
+        else:
+            self.cwd = pathlib.Path(cwd).absolute()
+        if not self.cwd.exists():
+            self.cwd.mkdir()
         self.preamble(preamble)
         self.ending()
         pass
@@ -17,9 +23,10 @@ class Tex:
     def preamble(self, p = None):
         if p is None:
             self.pre = r'''\documentclass[varwidth]{standalone}
-            \usepackage{amsmath}
-            \usepackage{amsfonts}
-            \begin{document}'''
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\begin{document}
+'''
         else:
             self.pre = p
 
@@ -46,20 +53,35 @@ class Tex:
         except subprocess.CalledProcessError:
             raise Exception(f"Failed to run subprocess {cmdlist[0]}. Check that it is on the PATH.")
 
-    def run(self, source, hash, cwd = __file__):
-        temp_dir = pathlib.Path(cwd).parent.parent.joinpath('tmp').absolute()
-        if not temp_dir.exists():
-            temp_dir.mkdir()
+    def run(self, source, hash, prepost = True):
         filename = hash + ".tex"
-        with open(temp_dir.joinpath(filename), 'w') as file:
-            file.write(self.pre)
+        with open(self.cwd.joinpath(filename), 'wb') as file:
+            if prepost: file.write(self.pre)
             file.write(source)
-            file.write(self._ending)
+            if prepost: file.write(self._ending)
         print(f"Tex running {hash}")
         self._run([self.exe,
             '-halt-on-error',
             '-interaction=nonstopmode',
             filename
-            ], temp_dir)
+            ], self.cwd)
         # and convert to png
-        self._run(["dvipng", hash + ".dvi"], temp_dir)
+        self._run(["dvipng", hash + ".dvi", "-o", hash + ".png"], self.cwd)
+
+    def render(self, source, displaymath = False):
+        """
+        Render a formula (optionally as display math) and return the hash
+        of the created output.
+        """
+        if displaymath:
+            input = self.pre + "\\begin{align*}\n" + source + "\\end{align*}\n" + self._ending
+        else:
+            input = self.pre + "$" + source + "$\n" + self._ending
+        input = bytes(input, 'utf-8')
+        hash = hashlib.sha256(input).hexdigest()
+        output = pathlib.Path(self.cwd).joinpath(hash + ".png")
+        if output.exists(): return hash
+        self.run(input, hash, prepost = False)
+        return hash
+
+    
