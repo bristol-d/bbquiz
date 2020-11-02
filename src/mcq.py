@@ -45,9 +45,7 @@ class Mcq:
             options = odata,
             correctid = correctid
         )
-
-
-
+        return template.render(d=data)
 
     def parse(self, parser):
         text = None

@@ -46,9 +46,9 @@ class Renderer:
     def render(self):
         self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w", 
             compression = zipfile.ZIP_STORED)
-        self._render_metadata()
         for (counter, pool) in enumerate(self.package.pools):
             self._render_pool(counter, pool)
+        self._render_metadata()
 
     def _render_metadata(self):
         """
@@ -66,6 +66,7 @@ class Renderer:
         self.z.write(template_filename('.bb-package-info'), ".bb-package-info")
 
         pkg_template = Template(filename = template_filename("package"))
+        print("writing " + reslist[-1].id + ".dat")
         self.z.writestr(reslist[-1].id + ".dat", pkg_template.render(name=self.package.name))
 
     def _render_pool(self, counter, pool):
@@ -75,4 +76,6 @@ class Renderer:
         ]
         template = Template(filename = template_filename("pool"))
         data = template.render(p=PoolResource(self.bbid(), self.bbid(), questions))
-        self.z.writestr(Resource(counter, None, None).id + ".dat", data)
+        datid = Resource(counter + 1, None, None).id
+        print("writing " + datid + ".dat")
+        self.z.writestr(datid + ".dat", data)
