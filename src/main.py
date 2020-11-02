@@ -1,12 +1,20 @@
 import BBparser as parser
 import mcq
+from renderer import Renderer
 
-import BlackboardQuiz
+# import BlackboardQuiz
 import sys
 import re
 
 
 def render(package):
+    """
+    Render a package with our own code.
+    """
+    Renderer(package).render()
+
+
+def renderBB(package):
     """
     Call BlackboardQuiz to render a package.
     """
@@ -15,7 +23,7 @@ def render(package):
         for pool in package.pools:
             with pk.createPool(pool.name, description = "", instructions = "") as pl:
                 for question in pool.questions:
-                    question.render(pl, counter)
+                    question.renderBB(pl, counter)
                     counter += 1
 
 
@@ -33,4 +41,6 @@ except FileNotFoundError:
 except OSError:
     print(f"I/O error on file {sys.argv[1]}")
     exit(3)
+
 render(package)
+#renderBB(package)

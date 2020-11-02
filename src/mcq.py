@@ -1,24 +1,53 @@
+from mako.template import Template
+import uuid
+from renderer import template_filename
+
 class Mcq:
     def __init__(self):
         self.options = []
         self.index = None
-
-    def stem(self, s):
-        self.stem = s
-
-    def option(self, o):
-        self.options.append(0)
-        return self
-
-    def answer(self, o):
-        self.options.append(0)
-        self.index = len(self.options)
-        return self
         
-    def render(self, pool, counter):
+    def renderBB(self, pool, counter):
         assert self.index is not None, "MCQ with no correct answer"
         pool.addMCQ('Q' + str(counter), self.stem, answers = [o for o in self.options],
             correct = self.index, positive_feedback = "", negative_feedback = "")
+
+    class OptionRenderData:
+        def __init__(self, id, text):
+            self.id = id
+            self.text = text
+
+    class RenderData:
+        def __init__(self, title, id, stem, options, correctid):
+            self.title = title
+            self.id = id
+            self.stem = stem
+            self.options = options
+            self.correctid = correctid
+
+    def render(self, counter, idgen):
+        """
+        Render a question 'in house'.
+        """
+        assert self.index is not None, "MCQ with no correct answer"
+        template = Template(filename = template_filename("mcq"))
+        correctid = uuid.uuid4().hex
+        odata = []
+        for (i, option) in enumerate(self.options):
+            if i == self.index:
+                odata.append(self.OptionRenderData(id = correctid, text = option))
+            else:
+                odata.append(self.OptionRenderData(id = uuid.uuid4().hex, text = option))
+        data = self.RenderData(
+            title = "Q" + str(counter), 
+            id = idgen(),
+            stem = self.stem,
+            options = odata,
+            correctid = correctid
+        )
+
+
+
 
     def parse(self, parser):
         text = None
