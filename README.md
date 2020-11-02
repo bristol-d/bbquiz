@@ -3,3 +3,12 @@
 This is a fork of [toastedcrumpets/BlackboardQuizMaker](https://github.com/toastedcrumpets/BlackboardQuizMaker).
 
 The project, like the original, is released under the MIT licence.
+
+## Dependencies
+
+This project currently requires the following, besides system packages:
+
+  * `mistletoe`, a markdown parser (`pip install mistletoe` should get it)
+  * `mako`, a template engine (`pip install mako`)
+
+Although a copy of the original file is currently around in `BlackboardQuiz.py` which requires sympy and a few other things (and so indirectly the whole NumPy stack), this is not needed for the main program.
