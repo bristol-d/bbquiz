@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lom>
+    <relation>
+        <resource>
+            <identifier>${resid}#/courses/OneQuestion_tex/LaTeX__xid-1000001_1\${hash}__xid-${resid}_1.png</identifier>
+        </resource>
+    </relation>
+</lom>

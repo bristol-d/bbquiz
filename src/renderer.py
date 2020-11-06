@@ -1,4 +1,5 @@
 from mako.template import Template
+from PIL import Image
 import zipfile
 import pathlib
 import mistletoe
@@ -33,19 +34,46 @@ def template_filename(name):
     mydir = pathlib.Path(__file__).parent.absolute()
     return str(mydir.joinpath('templates', name))
 
+class ResourceFileData:
+    """
+    Data associated with a file resource (e.g. Tex image):
+    resid, hash, w, h
+    """
+    def __init__(self, resid, hash, w, h):
+        self.resid = resid
+        self.hash = hash
+        self.w = w
+        self.h = h
+
 class Renderer:
     """
     Our own renderer.
     """
-    _bbid = 3191882 # why ???
-
+    
     def __init__(self, package):
         self.package = package
         self.z = None
+        self.resmap = {}
+        self.resources = False
+        self._bbid = 3191882 # why ???
+        self._resid = 1000001
+        self.files = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
+
+    # This is so that the mistletoe renderer can call it
+    def template_filename(self, t):
+        return template_filename(t)
 
     def bbid(self):
         self._bbid += 1
         return "_" + str(self._bbid) + "_1"
+
+    def resid(self):
+        """
+        Get the next resource id for including a file.
+        """
+        self._resid += 1
+        return str(self._resid)
+
 
     def render(self):
         self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w", 
@@ -84,6 +112,48 @@ class Renderer:
         print("writing " + datid + ".dat")
         self.z.writestr(datid + ".dat", data)
 
+    def render_resource(self, hash):
+        """
+        Include a resource file (image of a TeX formula).
+        Maintains a cache in resmap so we don't include the same thing multiple times.
+        """
+        if self.resources == False:
+            # write out the package header
+            pkgtemplate = Template(filename = template_filename("resource_header"))
+            pkgtext = pkgtemplate.render(pkgname = self.package.name)
+            self.z.writestr("csfiles/home_dir/LaTeX__xid-1000001_1.xml",
+                pkgtext
+            )
+            self.resources = True
+        if hash in self.resmap:
+            return self.resmap[hash]
+        # we need to write out the file. First, check it exists.
+        filename = self.files.joinpath(hash + ".png")
+        if filename.exists() and filename.is_file():
+           pass
+        else:
+            raise Exception(f"render_resource: hash {hash} does not refer to a valid file {str(filename)}.")
+
+        rid = self.resid()
+        template = Template(filename = template_filename("resource"))
+        # the xml file
+        self.z.writestr(
+            f"csfiles/home_dir/LaTeX_xid_{rid}/{hash}__xid-{rid}_1.png.xml",
+            template.render(hash=hash, resid=rid)
+        )
+        # and the image itself
+        self.z.write(
+            filename, 
+            f"csfiles/home_dir/LaTeX_xid_{rid}/{hash}__xid-{rid}_1.png"
+        )
+        # Get the image width/height for embedding
+        with Image.open(filename) as image:
+            width, height = image.size
+
+        self.resmap[hash] = ResourceFileData(rid, hash, width, height)
+        print(f"Resource {hash} mapped to id {rid}")
+        return self.resmap[hash]
+
     def render_text(self, text):
         """
         Render a block of text:
@@ -98,8 +168,7 @@ class Renderer:
         # check if we want to 'un-paragraph' it
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
             ast.children = ast.children[0].children
-        #ht = mistletoe.HTMLRenderer().render(ast)
-        ht = HTMLRendererWithTex().render(ast)
+        ht = HTMLRendererWithTex(self).render(ast)
         escaped = html.escape(ht)
         if escaped[-1] == '\n':
             return escaped[:-1]

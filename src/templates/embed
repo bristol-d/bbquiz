@@ -1,0 +1,1 @@
+<img src="@X@EmbeddedFile.requestUrlStub@X@/bbcswebdav/xid-${resdata.resid}_1" style="vertical-align:middle;" width="${resdata.w}" height="${resdata.h}" alt="${alt}"/>
