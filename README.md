@@ -161,3 +161,6 @@ $
 \frac{N(N+1)}{2}
 $
 END
+```
+
+This puts the formula inline in the rendered output, so you get "Consider the formula ..." all on one line. If you want the formula to stand on its own, include an empty line _before_ the first `$` sign. This causes a paragraph break in markdown (same rule as in Tex' paragraph mode), and as long as there are no empty lines between the opening and closing `$` sign, the formula will become a paragraph of its own in the output.
