@@ -57,6 +57,7 @@ class Renderer:
         self.resources = False
         self._bbid = 3191882 # why ???
         self._resid = 1000001
+        self._resid_0 = 1000001
         self.files = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
 
     # This is so that the mistletoe renderer can call it
@@ -138,13 +139,13 @@ class Renderer:
         template = Template(filename = template_filename("resource"))
         # the xml file
         self.z.writestr(
-            f"csfiles/home_dir/LaTeX_xid_{rid}/{hash}__xid-{rid}_1.png.xml",
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{hash}__xid-{rid}_1.png.xml",
             template.render(hash=hash, resid=rid)
         )
         # and the image itself
         self.z.write(
             filename, 
-            f"csfiles/home_dir/LaTeX_xid_{rid}/{hash}__xid-{rid}_1.png"
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{hash}__xid-{rid}_1.png"
         )
         # Get the image width/height for embedding
         with Image.open(filename) as image:
@@ -169,7 +170,7 @@ class Renderer:
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
             ast.children = ast.children[0].children
         ht = HTMLRendererWithTex(self).render(ast)
-        escaped = html.escape(ht)
+        escaped = html.escape(ht, quote = False)
         if escaped[-1] == '\n':
             return escaped[:-1]
         else:

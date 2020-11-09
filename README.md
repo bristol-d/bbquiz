@@ -94,4 +94,3 @@ Inside the stem and options, you can use inline Tex by using the `$...$` syntax.
 
   * allow markdown and tex in .option and .answer
   * allow mcq option to .question in preparation for adding more question types
-  * get tex upload to blackboard working
