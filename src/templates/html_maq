@@ -1,0 +1,15 @@
+<h3>Multiple answer question</h3>
+<p>${fmt(question.text)}</p>
+<ol>
+%for option in question.options:
+    <li>${fmt(option.text)}</li>
+%endfor
+</ol>
+<p class="solution">
+The correct answer values are:
+<ol>
+% for option in question.options:
+    <li>${option.correct}</li>
+% endfor
+</ol>
+</p>

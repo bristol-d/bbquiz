@@ -97,6 +97,19 @@ It is an error to have a number of `.answer` commands for a question other than 
 
 You can use markdown and Tex in both the text and the option/answer commands' arguments.
 
+### Multiple answer (maq)
+
+    .question maq
+        .text Which of the following are in Switzerland?
+        .option Paris
+        .answer Geneva
+        .answer Lausanne
+        .option Nancy
+
+A multiple answer question is syntactically exactly like a multiple choice question, except that there can be any number of correct answers including zero. Students must select all that apply and blackboard's automarker will give full marks if all choices are correct (the student has selected all of the correct options and none of the incorrect ones) and no marks otherwise.
+
+It should be possible to implement more complex scoring rules as blackboard's internal XML format uses tags with arbitrary and/or/not combinations, but this is not implemented in this tool yet.
+
 ### Short answer
 
 ```

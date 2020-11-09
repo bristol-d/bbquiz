@@ -2,7 +2,6 @@
 
 ## Question types
 
-  * multiple answer
   * jumbled sentence
 
 ## General

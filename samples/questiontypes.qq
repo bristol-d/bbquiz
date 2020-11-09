@@ -12,3 +12,10 @@
 
 .question shortanswer
     .text What is your favourite colour?
+
+.question maq
+    .text Which of these colours are reddish?
+    .answer red
+    .option blue
+    .option green
+    .answer pink
