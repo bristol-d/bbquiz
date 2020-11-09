@@ -89,8 +89,3 @@ Multiple choice questions have exactly one right answer. They take a mandatory `
 It is an error to have a number of `.answer` commands for a question other than one. Blackboard seems to support multiple choice questions with up to 100 options (including the correct one).
 
 Inside the stem and options, you can use inline Tex by using the `$...$` syntax. You need Tex installed and on your `PATH` for this, as this is handled by running the snippet through Tex itself to produce a PNG image, which is then embedded into the ZIP file to upload.
-
-# TODO
-
-  * allow markdown and tex in .option and .answer
-  * allow mcq option to .question in preparation for adding more question types
