@@ -95,3 +95,9 @@ class Mcq:
         self.options = answers
         self.index = correct
         return self
+
+    def display(self):
+        """
+        Return a view of this question for the HTML output.
+        """
+        return Template(filename = template_filename("html_mcq")).render(question = self)

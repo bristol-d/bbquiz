@@ -83,6 +83,15 @@ class Renderer:
         for (counter, pool) in enumerate(self.package.pools):
             self._render_pool(counter, pool)
         self._render_metadata()
+        self._render_overview()
+
+    def _render_overview(self):
+        """
+        Render a HTML overview of the package.
+        """
+        template = Template(filename = template_filename("html"))
+        with open(self.package.name + ".html", "w") as file:
+            file.write(template.render(package = self.package))
 
     def _render_metadata(self):
         """

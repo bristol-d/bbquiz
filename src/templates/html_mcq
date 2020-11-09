@@ -1,0 +1,10 @@
+<h3>Multiple choice question</h3>
+<p>${question.stem}</p>
+<ol>
+%for option in question.options:
+    <li>${option}</li>
+%endfor
+</ol>
+<p class="solution">
+The correct answer is number ${question.index + 1}.
+</p>
