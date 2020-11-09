@@ -97,6 +97,15 @@ It is an error to have a number of `.answer` commands for a question other than 
 
 You can use markdown and Tex in both the text and the option/answer commands' arguments.
 
+### Short answer
+
+```
+.question shortanswer
+    .text What is the capital of Switzerland?
+```
+
+A short-answer question simply contains a text (that can include markdown/HTML/Tex) and displays a rich-text box for students to answer. It cannot be automatically marked, but you can mark it manually in the blackboard grade centre.
+
 ## Markdown, HTML and Tex
 
 In most places where a command's argument is text that will end up being displayed in blackboard, you can use markdown as understood by the [mistletoe](https://github.com/miyuchina/mistletoe) parser - it complies with the CommonMark standard so anything defined in that standard should work. You can also include raw HTML, as long as blackboard is happy with it.

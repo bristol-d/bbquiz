@@ -2,7 +2,7 @@
 <lom>
     <relation>
         <resource>
-            <identifier>${resid}#/courses/OneQuestion_tex/LaTeX__xid-1000001_1\${hash}__xid-${resid}_1.png</identifier>
+            <identifier>${resid}#/courses/${pkgname}/LaTeX__xid-1000001_1\${hash}__xid-${resid}_1.png</identifier>
         </resource>
     </relation>
 </lom>

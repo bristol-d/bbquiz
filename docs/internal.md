@@ -38,7 +38,7 @@ In the zip file, under `csfiles/home_dir`, there are the following:
 </lom>
 ```
 
-  * A folder `LaTeX__xid-{I}` with, for each file,
+  * A folder `LaTeX__xid-1000001_1` with, for each file,
     * The file itself as `{NAME}__xid-{ID}_1.png`.
     * A file `{NAME}__xid-{ID}_1.png.xml` with the contents
 
@@ -47,7 +47,7 @@ In the zip file, under `csfiles/home_dir`, there are the following:
 <lom>
     <relation>
         <resource>
-            <identifier>{ID}#/courses/OneQuestion_tex/LaTeX__xid-1000001_1\{NAME}__xid-{ID}_1.png</identifier>
+            <identifier>{ID}#/courses/{PACKAGE}/LaTeX__xid-1000001_1\{NAME}__xid-{ID}_1.png</identifier>
         </resource>
     </relation>
 </lom>

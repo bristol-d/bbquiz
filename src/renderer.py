@@ -154,7 +154,7 @@ class Renderer:
         # the xml file
         self.z.writestr(
             f"csfiles/home_dir/LaTeX__xid-1000001_1/{hash}__xid-{rid}_1.png.xml",
-            template.render(hash=hash, resid=rid)
+            template.render(hash=hash, resid=rid, pkgname = self.package.name)
         )
         # and the image itself
         self.z.write(

@@ -1,0 +1,14 @@
+.filename questiontypes
+
+.pool Different question types
+
+.question mcq
+    .text What is the best colour in the world?
+    .option red
+    .option blue
+    .option green
+    .answer purple!!!
+    .option yellow
+
+.question shortanswer
+    .text What is your favourite colour?
