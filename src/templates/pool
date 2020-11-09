@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <questestinterop>
-    <assessment title="TheOne">
+    <assessment title="${p.name}">
         <assessmentmetadata>
             <bbmd_asi_object_id>${p.id}</bbmd_asi_object_id>
             <bbmd_asitype>Assessment</bbmd_asitype>

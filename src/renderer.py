@@ -25,7 +25,8 @@ class RenderedQuestion:
         self.content = q
 
 class PoolResource:
-    def __init__(self, id, sid, qs):
+    def __init__(self, name, id, sid, qs):
+        self.name = name
         self.id = id
         self.sid = sid
         self.questions = qs
@@ -118,7 +119,7 @@ class Renderer:
             for (c, q) in enumerate(pool.questions) 
         ]
         template = Template(filename = template_filename("pool"))
-        data = template.render(p=PoolResource(self.bbid(), self.bbid(), questions))
+        data = template.render(p=PoolResource(pool.name, self.bbid(), self.bbid(), questions))
         datid = Resource(counter + 1, None, None).id
         print("writing " + datid + ".dat")
         self.z.writestr(datid + ".dat", data)
