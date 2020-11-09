@@ -1,26 +1,33 @@
 # Bristol Blackboard Quiz Maker
 
-This is a fork of [toastedcrumpets/BlackboardQuizMaker](https://github.com/toastedcrumpets/BlackboardQuizMaker).
+This is a fork of [toastedcrumpets/BlackboardQuizMaker](https://github.com/toastedcrumpets/BlackboardQuizMaker). The project, like the original, is released under the MIT licence.
 
-The project, like the original, is released under the MIT licence.
+This project lets you write your blackboard quizzes in a text-based format instead of using the clunky user interface in blackboard. You can compile quiz files to ZIP packages that you can upload to blackboard, as well as create HTML overview files that you can use for example to show to your external examiner or other quality control people. The main features are:
+
+  * A text-based format for quizzes.
+  * Write your questions in markdown for emphasis, lists, paragraphs etc.
+  * Embed Tex formulas in your quizzes that are rendered as PNG images.
+  * Rendered images are cached across runs to speed up the common use case where you repeatedly proofread, edit and recompile your quiz.
 
 ## Dependencies
 
-This project currently requires the following, besides system packages:
+This project is written in python and currently requires the following packages, besides system packages. You should be able to install all of them with `pip install PACKAGENAME`, even on Windows.
 
-  * `mistletoe`, a markdown parser (`pip install mistletoe` should get it)
-  * `mako`, a template engine (`pip install mako`)
-  * `Pillow`, the python image library (`pip install Pillow`)
+  * `mistletoe`, a markdown parser
+  * `mako`, a template engine
+  * `Pillow`, the python image library
 
-Although a copy of the original file is currently around in `BlackboardQuiz.py` which requires sympy and a few other things (and so indirectly the whole NumPy stack), this is not needed for the main program.
+TeX must also be installed to run the program, with both `latex` and `dvipng` on the `PATH`.
 
-TeX must be installed to run the program, with both `latex` and `dvipng` on the `PATH`.
+Unlike the toastedcrumpets version, this program does not need the sympy/numpy python stack installed, which means it is easier to set up with vanilla python on Windows.
 
 ## Usage
 
 This project reads a source file in a text-based format and produces a ZIP file of questions that can be uploaded to blackboard. To run it, run 
 
     python src/main.py SOURCEFILE
+
+This creates both a ZIP file, which you can upload to blackboard, and a HTML file with an overview of your questions. The names of the output files are taken from the `.filename` command in your source file, which also functions as the blackboard package name.
 
 ## File format
 
@@ -88,4 +95,69 @@ Multiple choice questions have exactly one right answer. They take a mandatory `
 
 It is an error to have a number of `.answer` commands for a question other than one. Blackboard seems to support multiple choice questions with up to 100 options (including the correct one).
 
-Inside the stem and options, you can use inline Tex by using the `$...$` syntax. You need Tex installed and on your `PATH` for this, as this is handled by running the snippet through Tex itself to produce a PNG image, which is then embedded into the ZIP file to upload.
+You can use markdown and Tex in both the text and the option/answer commands' arguments.
+
+## Markdown, HTML and Tex
+
+In most places where a command's argument is text that will end up being displayed in blackboard, you can use markdown as understood by the [mistletoe](https://github.com/miyuchina/mistletoe) parser - it complies with the CommonMark standard so anything defined in that standard should work. You can also include raw HTML, as long as blackboard is happy with it.
+
+Note that markdown's indentation rules apply, for example anything indented four or more spaces is generally a code block. For example:
+
+```
+.question mcq
+    # This will not do what you want, as the indentation creates a code block:
+    .text <<END
+    What is the **capital** of Switzerland?
+    END
+
+.question mcq
+    # This is the correct way to do it, even though it spoils indentation
+    # of the source file. Indentation of the END marker does not matter
+    # as markdown never sees it.
+    .text <<END
+What is the **capital** of Switzerland?
+    END    
+```
+
+On top of this, I have implemented inline Tex by defining a new span token `$...$` with similar parsing behaviour to the backtick, except that the contents are rendered by calling Tex to produce a PNG image and then embedding this in the ZIP file. The contents of the tag are interpreted in Tex' math mode, not paragraph mode.
+
+The way the Tex token is implemented means that you are subject to the markdown parser's rules for span tokens, for example this works to create an unordered list whose elements are Tex formulas:
+
+```
+.question mcq
+.text <<END
+Consider the following polynomials:
+  * $(x-1)(x-2)$
+  * $(x-1)(x-3)$
+END
+```
+
+But this does not, because markdown inline tags are not recognised in lines starting with raw HTML tags:
+
+```
+# Do not do this, it doesn't work
+.question mcq
+.text <<END
+Consider the following polynomials:
+<ul>
+  <li>$(x-1)(x-2)$</li>
+  <li>$(x-1)(x-3)$</li>
+</ul>
+END
+```
+
+Your Tex code can span several lines, but not markdown paragraphs - in other words, you cannot have empty lines inside your Tex code. For example:
+
+```
+.question mcq
+# this works
+.text <<END
+Consider the formula
+$
+\left(
+  \sum_{i=0}^N i
+\right)
+=
+\frac{N(N+1)}{2}
+$
+END

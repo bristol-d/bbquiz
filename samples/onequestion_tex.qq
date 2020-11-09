@@ -5,7 +5,12 @@
 .pool TheOne
 
 .question mcq
-    .text What is the best colour in the world, where $x = 1$ and $e^{i \pi} + 1 = 0$?
+    .text <<END
+What is the best colour in the world, where $x = 1$ and
+$
+e^{i \pi} + 1 = 0
+$?
+END
     .option rgb $(255, 0, 0)$
     .option blue
     .option green

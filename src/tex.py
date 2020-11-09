@@ -2,14 +2,17 @@ import subprocess
 import os
 import pathlib
 import hashlib
+import shutil
+
 class Tex:
     """
     Functions for running Tex.
     This class is based off sympy/printing/preview.py which is BSD licenced.
     """
 
-    def __init__(self, exe = 'latex', preamble = None, cwd = None):
+    def __init__(self, exe = 'latex', preamble = None, cwd = None, renderer = None):
         self.exe = exe
+        self.renderer = renderer
         if cwd is None:
             self.cwd = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
         else:
@@ -80,8 +83,15 @@ class Tex:
         input = bytes(input, 'utf-8')
         hash = hashlib.sha256(input).hexdigest()
         output = pathlib.Path(self.cwd).joinpath(hash + ".png")
-        if output.exists(): return hash
-        self.run(input, hash, prepost = False)
+        if not output.exists():
+            self.run(input, hash, prepost = False)    
+        localfolder = pathlib.Path(self.renderer.package.name + "_files")
+        if not localfolder.exists():
+            localfolder.mkdir()
+        filename = hash + ".png"
+        targetfile = localfolder.joinpath(filename)
+        if not targetfile.exists():
+            shutil.copy(self.cwd.joinpath(filename), targetfile)
         return hash
 
     

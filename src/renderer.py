@@ -5,7 +5,7 @@ import pathlib
 import mistletoe
 import html
 
-from mistletoe_latex import HTMLRendererWithTex
+from mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
 # These helper classes have the correct attributes to be picked up by the XML templates.
 
@@ -61,6 +61,8 @@ class Renderer:
         self._resid_0 = 1000001
         self.files = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
         self.html = HTMLRendererWithTex(self)
+        # this one is for output in the HTML file
+        self.html2 = HTMLRendererWithTexForHTML(self)
 
     # This is so that the mistletoe renderer can call it
     def template_filename(self, t):
@@ -92,7 +94,8 @@ class Renderer:
         """
         template = Template(filename = template_filename("html"))
         with open(self.package.name + ".html", "w") as file:
-            file.write(template.render(package = self.package))
+            file.write(template.render(
+                package = self.package, fmt = self.render_text_html))
 
     def _render_metadata(self):
         """
@@ -165,6 +168,17 @@ class Renderer:
         self.resmap[hash] = ResourceFileData(rid, hash, width, height)
         print(f"Resource {hash} mapped to id {rid}")
         return self.resmap[hash]
+
+    def render_text_html(self, text):
+        """
+        Render text for output in the HTML document.
+        """
+        ast = mistletoe.Document(text)
+        if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
+            ast.children = ast.children[0].children
+        ht = self.html2.render(ast)
+        # here we don't want to escape, because we are returning raw HTML
+        return ht
 
     def render_text(self, text):
         """

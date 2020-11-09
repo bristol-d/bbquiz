@@ -8,7 +8,7 @@
         % for pool in package.pools:
             <h2>Pool ${pool.name}</h2>
             %for question in pool.questions:
-                ${question.display()}
+                ${question.display(fmt)}
             % endfor
         % endfor
     </body>

@@ -16,7 +16,7 @@ class HTMLRendererWithTex(HTMLRenderer):
 
     def __init__(self, renderer, preamble = None):
         super().__init__(InlineMath)
-        self.tex = tex.Tex(preamble = preamble)
+        self.tex = tex.Tex(preamble = preamble, renderer = renderer)
         self.renderer = renderer
         self.template = Template(filename = renderer.template_filename("embed"))
 
@@ -29,3 +29,24 @@ class HTMLRendererWithTex(HTMLRenderer):
             alt = html.escape(token.content, quote = True)
         resdata = self.renderer.render_resource(hash)
         return self.template.render(resdata = resdata, alt = alt)
+
+class HTMLRendererWithTexForHTML(HTMLRenderer):
+    """
+    This one is for creating the HTML output.
+    """
+
+    def __init__(self, renderer, preamble = None):
+        super().__init__(InlineMath)
+        self.tex = tex.Tex(preamble = preamble, renderer = renderer)
+        self.renderer = renderer
+        self.template = Template(filename = renderer.template_filename("html_embed"))
+
+    def render_inline_math(self, token):
+        hash = self.tex.render(token.content)
+        if '\n' in token.content:
+            alt = "tex formula"
+        else:
+            alt = html.escape(token.content, quote = True)
+        resdata = self.renderer.render_resource(hash)
+        localfolder = self.renderer.package.name + "_files"
+        return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
