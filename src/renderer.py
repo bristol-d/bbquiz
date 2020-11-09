@@ -59,6 +59,7 @@ class Renderer:
         self._resid = 1000001
         self._resid_0 = 1000001
         self.files = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
+        self.html = HTMLRendererWithTex(self)
 
     # This is so that the mistletoe renderer can call it
     def template_filename(self, t):
@@ -169,7 +170,7 @@ class Renderer:
         # check if we want to 'un-paragraph' it
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":
             ast.children = ast.children[0].children
-        ht = HTMLRendererWithTex(self).render(ast)
+        ht = self.html.render(ast)
         escaped = html.escape(ht, quote = False)
         if escaped[-1] == '\n':
             return escaped[:-1]
