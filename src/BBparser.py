@@ -78,9 +78,11 @@ class Parser:
             while True:
                 line = self.nextline()
                 if line == '': self._raise("EOF inside heredoc started at line " + str(startline))
-                line = line.strip()
-                if line == marker:
+                s = line.strip()
+                if s == marker:
                     return (command, "\n".join(lines))
+                if line[-1] == "\n":
+                    line = line[:-1]
                 lines.append(line)
         else:
             return (command, match.group(3))
