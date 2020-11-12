@@ -25,6 +25,28 @@ class Parser:
             self.N += 1
         return line
 
+    def expect(self, command, command_err = None, EOF_err = None, EOF_allowed = False):
+        """
+        Utility method when the next command must be the one specified in the argument.
+        Optionally, EOF can be accepted too.
+        Returns argument or, if allowed, None for EOF.
+        """
+        if command_err is None:
+            command_err = f"A '{command}' is required here."
+        if EOF_err is None:
+            EOF_err = f"End of file but a '{command}' is required here."
+        line = self.next_interesting_line()
+        if line is None:
+            if EOF_allowed:
+                return None
+            else:
+                parser._raise(EOF_err)
+        c, arg = self.parse_command(line)
+        if c == command:
+            return arg
+        else:
+            parser._raise(command_err)
+
     def next_interesting_line(self):
         """
         Get the next line that is not empty or a comment. 

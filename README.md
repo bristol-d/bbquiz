@@ -119,6 +119,20 @@ It should be possible to implement more complex scoring rules as blackboard's in
 
 A short-answer question simply contains a text (that can include markdown/HTML/Tex) and displays a rich-text box for students to answer. It cannot be automatically marked, but you can mark it manually in the blackboard grade centre.
 
+### Numeric
+
+   .question numeric
+       .text What is the square root of 2?
+       .answer 1.414 delta 0.01
+
+A numeric question requires a 'text' and an 'answer' command, in that order. The text can be markdown/HTML/Tex as for other question types. The answer is either a number (in which case the student must give that exact answer to get points) or "NUMBER delta NUMBER" to specify a range, for example "1.414 delta 0.01" accepts answers in the range from 1.404 to 1.424.
+
+Numbers can be:
+  - An integer, with an optional leading minus sign.
+  - A floating point value, with an optional leading minus sign, where at least one digit before the decimal point is required (so 0.2 is ok but .2 is not).
+
+Exponential notation (1.0e2) is currently not supported.
+
 ## Markdown, HTML and Tex
 
 In most places where a command's argument is text that will end up being displayed in blackboard, you can use markdown as understood by the [mistletoe](https://github.com/miyuchina/mistletoe) parser - it complies with the CommonMark standard so anything defined in that standard should work. You can also include raw HTML, as long as blackboard is happy with it.

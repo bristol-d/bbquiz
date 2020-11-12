@@ -19,3 +19,11 @@
     .option blue
     .option green
     .answer pink
+
+.question numeric
+    .text What is 1 + 1?
+    .answer 2
+
+.question numeric
+    .text What is the square root of 2?
+    .answer 1.414 delta 0.01
