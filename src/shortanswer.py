@@ -45,6 +45,6 @@ class ShortAnswer:
 
     def display(self, fmt):
         return f"""
-<h3>Short answer question<h3>
-<p>{fmt(self.text)}</p>
+<h3 class="doc">Short answer question</h3>
+<div class="stem">{fmt(self.text)}</div>
 """

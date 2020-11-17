@@ -1,10 +1,12 @@
-<h3>Multiple choice question</h3>
-<p>${fmt(question.stem)}</p>
+<h3 class="doc">Multiple choice question</h3>
+<div class="stem">
+${fmt(question.stem)}
 <ol>
 %for option in question.options:
     <li>${fmt(option)}</li>
 %endfor
 </ol>
+</div>
 <p class="solution">
 The correct answer is number ${question.index + 1}.
 </p>

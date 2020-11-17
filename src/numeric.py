@@ -49,8 +49,8 @@ class Numeric:
             d = ""
 
         t = f"""
-<h3>Numeric question</h3>
-{fmt(self.text)}
+<h3 class="doc">Numeric question</h3>
+<div class="stem">{fmt(self.text)}</div>
 <p class="solution">The correct answer is {self.answer}. {d}</p>
 """
         return t

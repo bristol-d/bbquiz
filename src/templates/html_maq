@@ -1,10 +1,12 @@
-<h3>Multiple answer question</h3>
-<p>${fmt(question.text)}</p>
+<h3 class="doc">Multiple answer question</h3>
+<div class="stem">
+${fmt(question.text)}
 <ol>
 %for option in question.options:
     <li>${fmt(option.text)}</li>
 %endfor
 </ol>
+</div>
 <p class="solution">
 The correct answer values are:
 <ol>
