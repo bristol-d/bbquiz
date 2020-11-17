@@ -81,11 +81,21 @@ The argument to a `.question` command is the question type. If you give a questi
 
 Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
 
-### Configuration commands
+## Configuration commands
 
 After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
 
   * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument.
+
+## Question configuration
+
+_These features are currently only implemented for multiple-answer questions. Work in progress!_
+
+All question types _will in the near future_ support the following commands, which must come immediately after `.question` and before any question-specific commands:
+
+  * `.note` writes its argument to the HTML file output, but is not shown to students. You could use this for example for more detailed notes on the sample solution.
+  * `.config key=value` sets a configuration option. All question types support the following generic configuration keys, but different types of question may support further options:
+    - `points` sets the number of points for this question. If omitted, the default is 10. The value must be an integer.
 
 ## Question types
 

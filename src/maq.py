@@ -1,6 +1,7 @@
 from mako.template import Template
 import uuid
 from renderer import template_filename
+import question
 
 class MaqOption:
     def __init__(self, text, correct):
@@ -9,21 +10,21 @@ class MaqOption:
         self.uuid = uuid.uuid4().hex
         self.rendered = None
 
-class Maq:
+class Maq(question.Question):
     """
     Multiple answer question.
     The difference to multiple choice is that you select all that apply.
     """
 
     def __init__(self):
+        super().__init__()
         self.options = []
         self.text = None
 
-    def parse(self, parser):
-        startline = parser.N
+    def parse2(self, parser):
         line = parser.next_interesting_line()
         if line is None: 
-            parser._raise("EOF while looking for a question text for question starting at line " + str(startline))
+            parser._raise("EOF while looking for a question text for question starting at line " + str(self.startline))
         command, arg = parser.parse_command(line)
         if command == 'text':
             self.text = arg

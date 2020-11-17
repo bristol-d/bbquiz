@@ -1,0 +1,23 @@
+# Multiple answer questions
+
+.filename maq
+
+.pool Multiple answer
+
+.question maq
+    .note This is a note that appears in the html output (not shown to students).
+
+    .text Which of the following are reddish?
+    .answer red
+    .option blue
+    .option green
+    .answer pink
+
+.question maq
+    .config points=5
+
+    .text Which of the following are blueish?
+    .option red
+    .answer blue
+    .option green
+    .option pink

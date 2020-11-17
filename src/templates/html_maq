@@ -1,4 +1,4 @@
-<h3 class="doc">Multiple answer question</h3>
+<h3 class="doc">Multiple answer question (${question.config['points']} points)</h3>
 <div class="stem">
 ${fmt(question.text)}
 <ol>
@@ -15,3 +15,4 @@ The correct answer values are:
 % endfor
 </ol>
 </p>
+<div class="note">${question.note}</div>
