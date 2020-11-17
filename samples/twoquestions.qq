@@ -2,9 +2,9 @@
 
 .filename TwoQuestions
 
-.pool TheOne
+.pool Two MCQs
 
-.question
+.question mcq
     .text What is the best colour in the world?
     .option red
     .option blue
@@ -12,7 +12,9 @@
     .answer purple!!!
     .option yellow
 
-.question
+.question mcq
+    .note A note
+    .config points=20
     .text The capital of Switzerland is:
     .option Zurich
     .answer Bern

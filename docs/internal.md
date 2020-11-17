@@ -52,3 +52,14 @@ In the zip file, under `csfiles/home_dir`, there are the following:
     </relation>
 </lom>
 ```
+
+## Points
+
+The following lines seem to be used to set the number of points for a question:
+
+    <resprocessing scoremodel="SumOfScores">
+      <outcomes>
+          <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="10.00000"/>
+      </outcomes>
+
+We use `${question.config['points']}` for the integer part of the maxvalue, which is defined in the question base class.

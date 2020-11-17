@@ -89,7 +89,7 @@ After `.filename`, which must be the first command, but before starting the firs
 
 ## Question configuration
 
-_These features are currently only implemented for multiple-answer questions. Work in progress!_
+_These features are currently only implemented for multiple-choice and multiple-answer questions. Work in progress!_
 
 All question types _will in the near future_ support the following commands, which must come immediately after `.question` and before any question-specific commands:
 
