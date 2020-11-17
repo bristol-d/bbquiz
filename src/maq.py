@@ -21,11 +21,7 @@ class Maq(question.Question):
         self.options = []
         self.text = None
 
-    def parse2(self, parser):
-        line = parser.next_interesting_line()
-        if line is None: 
-            parser._raise("EOF while looking for a question text for question starting at line " + str(self.startline))
-        command, arg = parser.parse_command(line)
+    def parse2(self, parser, command, arg):
         if command == 'text':
             self.text = arg
         else:

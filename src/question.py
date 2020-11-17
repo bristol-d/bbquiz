@@ -21,6 +21,8 @@ class Question:
     and common config options.
 
     Subclasses must implement parse2, render, display.
+    parse2 takes (command, arg) as extra arguments which are the first command
+    that is specific to the question.
     Subclass constructors must call super().__init__().
 
     If the config option 'points' is not set, it defaults to 10.
@@ -64,8 +66,9 @@ class Question:
                 else:
                     parser._raise(f"This question type does not support the {key} configuration option.")
             else:
-                parser.putback = line
+                # the next parsed command is pending in (command, arg) but we can't do a
+                # putback, as it might be a heredoc. Instead, parse2 needs to look at it.
                 break
         if 'points' not in self.config:
             self.config['points'] = 10
-        return self.parse2(parser)
+        return self.parse2(parser, command, arg)

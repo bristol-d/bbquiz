@@ -15,15 +15,11 @@ class Mcq(question.Question):
         self.options = []
         self.index = None
 
-    def parse2(self, parser):
+    def parse2(self, parser, command, arg):
         text = None
         correct = None
         index = 0
 
-        # find the text
-        line = parser.next_interesting_line()
-        if line is None: parser._raise("EOF while looking for a question text for question starting at line " + str(self.startline))
-        command, arg = parser.parse_command(line)
         if command == 'text':
             text = arg
         else:
@@ -32,7 +28,7 @@ class Mcq(question.Question):
             line = parser.next_interesting_line()
             if line is None:
                 if len(self.options) == 0:
-                    parser._raise("Question with no answers starting at line " + str(startline))
+                    parser._raise("Question with no answers starting at line " + str(self.startline))
                 else:
                     break
             command, arg = parser.parse_command(line)
