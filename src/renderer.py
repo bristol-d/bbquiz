@@ -95,7 +95,10 @@ class Renderer:
         template = Template(filename = template_filename("html"))
         with open(self.package.name + ".html", "w") as file:
             file.write(template.render(
-                package = self.package, fmt = self.render_text_html))
+                package = self.package, 
+                fmt = self.render_text_html,
+                htmlcontent = self.render_text_html(self.package.htmlcontent)
+            ))
 
     def _render_metadata(self):
         """

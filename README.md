@@ -81,6 +81,12 @@ The argument to a `.question` command is the question type. If you give a questi
 
 Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
 
+### Configuration commands
+
+After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
+
+  * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument.
+
 ## Question types
 
 ### Multiple choice (mcq)
@@ -121,9 +127,9 @@ A short-answer question simply contains a text (that can include markdown/HTML/T
 
 ### Numeric
 
-   .question numeric
-       .text What is the square root of 2?
-       .answer 1.414 delta 0.01
+    .question numeric
+        .text What is the square root of 2?
+        .answer 1.414 delta 0.01
 
 A numeric question requires a 'text' and an 'answer' command, in that order. The text can be markdown/HTML/Tex as for other question types. The answer is either a number (in which case the student must give that exact answer to get points) or "NUMBER delta NUMBER" to specify a range, for example "1.414 delta 0.01" accepts answers in the range from 1.404 to 1.424.
 

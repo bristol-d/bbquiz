@@ -5,6 +5,7 @@
     </head>
     <body>
         <h1>Package ${package.name}</h1>
+        ${htmlcontent}
         % for pool in package.pools:
             <h2>Pool ${pool.name}</h2>
             %for question in pool.questions:

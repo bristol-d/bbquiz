@@ -4,6 +4,7 @@ class Package:
     def __init__(self):
         self.name = "BBQuestions"
         self.pools = []
+        self.htmlcontent = ""
 
 class Pool:
     def __init__(self, name):

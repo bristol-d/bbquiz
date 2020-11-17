@@ -102,6 +102,8 @@ class Parser:
                 else:
                     self.package.name = arg
                     self.has_name = self.N
+            elif command == 'html':
+                self.package.htmlcontent = arg
             else:
                 self._raise("Expected a pool or filename command.")
 

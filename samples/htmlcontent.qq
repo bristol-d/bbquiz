@@ -1,0 +1,12 @@
+.filename htmlcontent
+
+.html <<END
+This is an example of custom content that is only shown in the HTML file.
+
+  * You can use markdown.
+END
+
+.pool HTML content
+
+.question shortanswer
+    .text What is your favourite colour?
