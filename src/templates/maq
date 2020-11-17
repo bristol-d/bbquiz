@@ -52,7 +52,7 @@
                 </presentation>
                 <resprocessing scoremodel="SumOfScores">
                     <outcomes>
-                        <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="10.00000"/>
+                        <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="${question.config['points']}.00000"/>
                     </outcomes>
                     <respcondition title="correct">
                         <conditionvar>
