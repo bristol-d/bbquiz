@@ -2,17 +2,21 @@ from mako.template import Template
 import uuid
 from renderer import template_filename
 import re
+import question
 
-class Numeric:
+class Numeric(question.Question):
     def __init__(self):
+        super().__init__()
         self.range = None
 
-    def parse(self, parser):
+    def parse2(self, parser, cmd, arg):
         """
         Format is text, answer
         answer format is N [delta D]
         """
-        self.text = parser.expect('text')
+        if cmd != 'text':
+            parser._raise("Expecting 'text'.")
+        self.text = arg
         answerline = parser.expect('answer')
         match = re.match(r'([-]?\d+([.]\d+)?)( +delta +(\d+([.]\d+)?))?', answerline)
         answer = match.group(1)
@@ -49,8 +53,9 @@ class Numeric:
             d = ""
 
         t = f"""
-<h3 class="doc">Numeric question</h3>
+<h3 class="doc">Numeric question ({self.config['points']} points)</h3>
 <div class="stem">{fmt(self.text)}</div>
 <p class="solution">The correct answer is {self.answer}. {d}</p>
+<div class="note">{self.note}</div>
 """
         return t

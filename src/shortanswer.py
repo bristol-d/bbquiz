@@ -1,7 +1,8 @@
 from mako.template import Template
 from renderer import template_filename
+import question
 
-class ShortAnswer:
+class ShortAnswer(question.Question):
     """
     Short-answer question.
 
@@ -10,9 +11,15 @@ class ShortAnswer:
     """
 
     def __init__(self):
+        super().__init__()
         self.text = None
 
-    def parse(self, parser):
+    def parse2(self, parser, cmd, arg):
+        if cmd == 'text':
+            self.text = arg
+        else:
+            parser._raise("Expecting 'text'")
+
         while True:
             line = parser.next_interesting_line()
             if line is None:
@@ -22,10 +29,7 @@ class ShortAnswer:
                 parser.putback = line
                 break
             elif command == 'text':
-                if self.text is None:
-                    self.text = arg
-                else:
-                    parser._raise("More than one 'text' for same question.")
+                parser._raise("More than one 'text' for same question.")
             else:
                 parser._raise("Unexpected command.")
         if self.text is None:
@@ -45,6 +49,7 @@ class ShortAnswer:
 
     def display(self, fmt):
         return f"""
-<h3 class="doc">Short answer question</h3>
+<h3 class="doc">Short answer question ({self.config['points']} points)</h3>
 <div class="stem">{fmt(self.text)}</div>
+<div class="note">{self.note}</div>
 """

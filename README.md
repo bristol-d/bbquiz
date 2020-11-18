@@ -89,9 +89,7 @@ After `.filename`, which must be the first command, but before starting the firs
 
 ## Question configuration
 
-_These features are currently only implemented for multiple-choice and multiple-answer questions. Work in progress!_
-
-All question types _will in the near future_ support the following commands, which must come immediately after `.question` and before any question-specific commands:
+All question types support the following commands, which must come immediately after `.question` and before any question-specific commands:
 
   * `.note` writes its argument to the HTML file output, but is not shown to students. You could use this for example for more detailed notes on the sample solution.
   * `.config key=value` sets a configuration option. All question types support the following generic configuration keys, but different types of question may support further options:

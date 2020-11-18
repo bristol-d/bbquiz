@@ -14,7 +14,7 @@
                     <bbmd_partialcredit>false</bbmd_partialcredit>
                     <bbmd_orientationtype>vertical</bbmd_orientationtype>
                     <bbmd_is_extracredit>false</bbmd_is_extracredit>
-                    <qmd_absolutescore_max>10.000000000000000</qmd_absolutescore_max>
+                    <qmd_absolutescore_max>${question.config['points']}.000000000000000</qmd_absolutescore_max>
                     <qmd_weighting>0</qmd_weighting>
                     <qmd_instructornotes></qmd_instructornotes>
                 </itemmetadata>
@@ -38,7 +38,7 @@
                 </presentation>
                 <resprocessing scoremodel="SumOfScores">
                     <outcomes>
-                        <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="10.00000"/>
+                        <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="${question.config['points']}.00000"/>
                     </outcomes>
                     <respcondition title="${question.uuid}">
                         <conditionvar>
