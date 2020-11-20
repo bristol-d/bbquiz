@@ -8,6 +8,9 @@
         ${htmlcontent}
         % for pool in package.pools:
             <h2 class="doc">Pool ${pool.name}</h2>
+            <div class="instructions">
+            ${fmt(pool.instructions)}
+            </div>
             %for question in pool.questions:
                 ${question.display(fmt)}
             % endfor

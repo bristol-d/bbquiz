@@ -25,11 +25,12 @@ class RenderedQuestion:
         self.content = q
 
 class PoolResource:
-    def __init__(self, name, id, sid, qs):
+    def __init__(self, name, id, sid, qs, instructions):
         self.name = name
         self.id = id
         self.sid = sid
         self.questions = qs
+        self.instructions = instructions
 
 def template_filename(name):
     mydir = pathlib.Path(__file__).parent.absolute()
@@ -125,7 +126,13 @@ class Renderer:
             for (c, q) in enumerate(pool.questions) 
         ]
         template = Template(filename = template_filename("pool"))
-        data = template.render(p=PoolResource(pool.name, self.bbid(), self.bbid(), questions))
+        data = template.render(p=PoolResource(
+            name = pool.name, 
+            id = self.bbid(), 
+            sid = self.bbid(), 
+            qs = questions, 
+            instructions = self.render_text(pool.instructions)
+        ))
         datid = Resource(counter + 1, None, None).id
         print("writing " + datid + ".dat")
         self.z.writestr(datid + ".dat", data)
@@ -193,6 +200,7 @@ class Renderer:
         In step 1, if the whole thing is a single paragraph, then we do not want to wrap it
         in p tags.
         """
+        if text == '': return text
         ast = mistletoe.Document(text)
         # check if we want to 'un-paragraph' it
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":

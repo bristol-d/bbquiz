@@ -115,6 +115,8 @@ class Parser:
             command, arg = self.parse_command(line)
             if command == 'question':
                 self.parse_question(pool, arg)
+            elif command == 'instructions':
+                pool.instructions = arg
             elif command == 'pool':
                 # put this back rather than recurse, it's cleaner
                 # and python isn't guaranteed to do tail recursion

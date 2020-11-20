@@ -24,7 +24,7 @@
             <flow_mat class="Block">
                 <material>
                     <mat_extension>
-                        <mat_formattedtext type="HTML"></mat_formattedtext>
+                        <mat_formattedtext type="HTML">${p.instructions}</mat_formattedtext>
                     </mat_extension>
                 </material>
             </flow_mat>

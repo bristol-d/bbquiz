@@ -2,6 +2,10 @@
 
 .pool Different question types
 
+.instructions <<END
+This is a pool of questions that shows the different possible question types.
+END
+
 .question mcq
     .text What is the best colour in the world?
     .option red

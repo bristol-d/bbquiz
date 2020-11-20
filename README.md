@@ -81,11 +81,21 @@ The argument to a `.question` command is the question type. If you give a questi
 
 Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
 
+Just after a `.pool` but before the first `.question` in the pool, you may include an `.instructions` command. Its argument is text (including markdown, HTML and TeX) that is displayed to students at the top of the exam page, above the questions, under the heading _Instructions:_. You could use this, for example, for information like this if appropriate:
+
+    .instructions <<END
+    Every question in this part of the exam is worth 3 marks
+    and has exactly one right answer.
+
+    You get 3 marks for selecting the right answer and 0 marks
+    for selecting an incorrect answer or no answer at all.
+    END
+
 ## Configuration commands
 
 After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
 
-  * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument.
+  * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument. This information is not displayed to students.
 
 ## Question configuration
 
