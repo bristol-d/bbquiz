@@ -157,6 +157,26 @@ Numbers can be:
 
 Exponential notation (1.0e2) is currently not supported.
 
+### Jumbled Sentence
+
+    .question jumbled
+        .text Complete the poem: The {2} {3} on the {1}.
+        .option mat
+        .option cat
+        .option sat
+        .option pat
+        .option fat
+
+A jumbled sentence question takes a HTML/markdown text and a list of options. The option values must be plain text, not HTML, as they end up in a dropdown box.
+
+In the text, you can write placeholders with the syntax `{n}` where `n` is the number of the correct option in the list - counting starts at one, not zero.
+
+_Note: internally, blackboard uses the syntax `[tag]` to denote placeholders, so you must not use square brackets in your question text itself._
+
+_If you let the student see a summary of all the questions and points, but not the answers, at the end of the test then this question would be shown as `Complete the poem: the [a] [b] on the [c].` using tags that are simply consecutive letter sequences, so this does not give the answer away. The only reason that the answer information is encoded in the question text itself for this question type is to make the input file format a bit easier._
+
+The normal scoring method for this kind of question is full marks for getting every choice right and 0 marks otherwise. You can change this by adding the line `.config partial=true` after the `.question` line but before the `.text` one, in which case each box in which the student selects an answer gives 1/N of the total marks for the question if correct, and 0 marks otherwise, where N is the total number of option boxes in the question.
+
 ## Markdown, HTML and Tex
 
 In most places where a command's argument is text that will end up being displayed in blackboard, you can use markdown as understood by the [mistletoe](https://github.com/miyuchina/mistletoe) parser - it complies with the CommonMark standard so anything defined in that standard should work. You can also include raw HTML, as long as blackboard is happy with it.

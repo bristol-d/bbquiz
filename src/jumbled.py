@@ -41,13 +41,16 @@ class Jumbled(question.Question):
                 parser.putback = line
                 break
         if 'partial' in self.config:
-            self.partial = self.config['partial']
+            p = self.config['partial']
+            if p in ['true', 'false']:
+                self.partial = p
+            else:
+                parser._raise(f"Illegal value for 'partial', use 'true' or 'false' (question starting at line {self.startline})")
 
         # parse the text and replace {i} identifiers
         # doing this here so we can throw a parser exception with a line number if needed
         text = self.text
         expr = r'[{]([0-9]+)[}]'
-        print(f"DEBUG before loop, text={text}")
         while (m := re.search(expr, text)):
             i = m.group(1)
             try:
@@ -62,7 +65,6 @@ class Jumbled(question.Question):
             tag = self.next_tag()
             self.mapping[tag] = i
             text = re.sub(expr, f"[{tag}]", text, 1)
-            print(f"DEBUG text={text}")
         self.text2 = text
 
         return self
@@ -93,7 +95,8 @@ class Jumbled(question.Question):
         )
 
     def display(self, fmt):
-        return "todo"
+        t = Template(filename = template_filename("html_jumbled"))
+        return t.render(question = self, fmt = fmt)
 
 
         
