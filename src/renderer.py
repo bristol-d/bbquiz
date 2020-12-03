@@ -65,6 +65,17 @@ class Renderer:
         # this one is for output in the HTML file
         self.html2 = HTMLRendererWithTexForHTML(self)
 
+    def qn(self, c):
+        """
+        Return a formatted question number, e.g. with leading zeroes.
+        """
+        if 'qn_width' in self.package.config:
+            w = int(self.package.config['qn_width'])
+            s = f"Q%0{w}i"
+            return s % c
+        else:
+            return "Q" + str(c)
+
     # This is so that the mistletoe renderer can call it
     def template_filename(self, t):
         return template_filename(t)
@@ -123,7 +134,7 @@ class Renderer:
 
     def _render_pool(self, counter, pool):
         questions = [ 
-            RenderedQuestion(q.render(c+1, self.bbid, self)) 
+            RenderedQuestion(q.render(self.qn(c+1), self.bbid, self)) 
             for (c, q) in enumerate(pool.questions) 
         ]
         template = Template(filename = template_filename("pool"))

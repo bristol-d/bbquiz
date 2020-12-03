@@ -36,10 +36,10 @@ class Numeric(question.Question):
         return self
 
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         template = Template(filename = template_filename("numeric"))
         self.rendered = renderer.render_text(self.text)
-        return template.render(question = self, id = idgen(), title = "Q" + str(counter))
+        return template.render(question = self, id = idgen(), title = qn)
 
 
     def display(self, fmt):

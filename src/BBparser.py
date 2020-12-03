@@ -104,6 +104,14 @@ class Parser:
                     self.has_name = self.N
             elif command == 'html':
                 self.package.htmlcontent = arg
+            elif command == 'config':
+                m = re.match("([a-zA-Z0-9_]+) *=(.*)", arg)
+                if m:
+                    key = m.group(1)
+                    value = m.group(2).strip()
+                    self.package.config[key]=value
+                else:
+                    self._raise("Error in package-level config line, expected argument 'key=value'")
             else:
                 self._raise("Expected a pool or filename command.")
 

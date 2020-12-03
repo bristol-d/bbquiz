@@ -85,13 +85,13 @@ class Jumbled(question.Question):
         self.counter += 1
         return tag
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         template = Template(filename = template_filename("jumbled"))
         self.rendered = renderer.render_text(self.text2)
         return template.render(
             question = self,
             id = idgen(),
-            title = "Q" + str(counter)
+            title = qn
         )
 
     def display(self, fmt):

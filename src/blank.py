@@ -57,7 +57,7 @@ class FillInTheBlank(question.Question):
         self.counter += 1
         return tag
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         template = Template(filename = template_filename("fillblank"))
         rendered = renderer.render_text(self.text)
 
@@ -77,7 +77,7 @@ class FillInTheBlank(question.Question):
         return template.render(
             question = self,
             id = idgen(),
-            title = "Q" + str(counter)
+            title = qn
         )
 
     def display(self, fmt):

@@ -5,6 +5,7 @@ class Package:
         self.name = "BBQuestions"
         self.pools = []
         self.htmlcontent = ""
+        self.config = {}
 
 class Pool:
     def __init__(self, name):

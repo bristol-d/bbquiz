@@ -36,13 +36,13 @@ class ShortAnswer(question.Question):
             parser._raise("Question without 'text'.")
         return self
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         assert self.text is not None, "Short answer question with no question text"
         self.rendered = renderer.render_text(self.text)
         template = Template(filename = template_filename("shortanswer"))
         fragment = template.render(
             question=self,
-            title = "Q" + str(counter),
+            title = qn,
             id = idgen()
         )
         return fragment

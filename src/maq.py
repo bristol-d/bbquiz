@@ -49,7 +49,7 @@ class Maq(question.Question):
 
         return self
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         assert len(self.options) > 0, "MAQ with no answers"
         template = Template(filename = template_filename("maq"))
         self.rendered = renderer.render_text(self.text)
@@ -57,7 +57,7 @@ class Maq(question.Question):
             option.rendered = renderer.render_text(option.text)
         fragment = template.render(
             question = self,
-            title = "Q" + str(counter),
+            title = qn,
             id = idgen()
         )
         return fragment
