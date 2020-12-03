@@ -96,6 +96,8 @@ Just after a `.pool` but before the first `.question` in the pool, you may inclu
 After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
 
   * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument. This information is not displayed to students.
+  * `.config KEY=VALUE` sets a global configuration option. Currently the following are supported:
+    - `qn_width` (integer value): Zero-pad question numbers, for example with `qn_width=2` the questions are numbered Q01, Q02 etc. instead of Q1, Q2 etc. This is useful because when you import questions into blackboard, it displays question "numbers" (which are really strings) in lexicographic order.
 
 ## Question configuration
 
