@@ -46,7 +46,9 @@
                         <conditionvar>
                             <and>
                                 % for tag in question.mapping:
-                                <varequal respident="${tag}" case="No">${question.mapping[tag]}</varequal>
+                                <or>
+                                    <varequal respident="${tag}" case="No">${question.mapping[tag]}</varequal>
+                                </or>
                                 % endfor
                             </and>
                         </conditionvar>
