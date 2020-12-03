@@ -177,6 +177,19 @@ _If you let the student see a summary of all the questions and points, but not t
 
 The normal scoring method for this kind of question is full marks for getting every choice right and 0 marks otherwise. You can change this by adding the line `.config partial=true` after the `.question` line but before the `.text` one, in which case each box in which the student selects an answer gives 1/N of the total marks for the question if correct, and 0 marks otherwise, where N is the total number of option boxes in the question.
 
+### Fill in the blanks
+
+    .question blanks
+        .text Complete the poem: The {} sat on the {}.
+        .answer cat
+        .answer mat
+
+A fill-in-the-blanks question takes a text with one or more `{}` placeholders, which get displayed to the student as text boxes. You must provide the same number of `.answer` lines, each taking a plain text argument.
+
+_Internally, blackboard uses placeholders of the form `[a], [b], ...`. You must not use anything in the question text that renders to something looking like a blackboard placeholder. Markdown links are fine because these get turned into HTML before they reach blackboard._
+
+Currently, the scoring system implemented is full marks for an exact match everywhere, 0 marks otherwise - partial marks are on the TODO list.
+
 ## Markdown, HTML and Tex
 
 In most places where a command's argument is text that will end up being displayed in blackboard, you can use markdown as understood by the [mistletoe](https://github.com/miyuchina/mistletoe) parser - it complies with the CommonMark standard so anything defined in that standard should work. You can also include raw HTML, as long as blackboard is happy with it.
