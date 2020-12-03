@@ -1,0 +1,13 @@
+<h3 class="doc">Fill in the blanks question (${question.config['points']} points)</h3>
+<div class="stem">
+${fmt(question.text)}
+</div>
+<p class="solution">
+The correct answers are
+<ol>
+% for b in question.blanks:
+  <li>${b}</li>
+% endfor
+</ol>
+</p>
+<div class="note">${question.note}</div>

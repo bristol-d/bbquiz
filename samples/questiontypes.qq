@@ -39,3 +39,10 @@ END
     .option sat
     .option mat
     .option pat
+
+.question blanks
+    .text The {} {} on the {}.
+    .answer cat
+    .answer sat
+    .answer mat
+

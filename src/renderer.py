@@ -71,7 +71,8 @@ class Renderer:
 
     def bbid(self):
         self._bbid += 1
-        return "_" + str(self._bbid) + "_1"
+        r = "_" + str(self._bbid) + "_1"
+        return r
 
     def resid(self):
         """

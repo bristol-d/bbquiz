@@ -25,7 +25,7 @@ class Jumbled(question.Question):
         if command == 'text':
             self.text = arg
         else:
-            parser._raise("Expectiing .text")
+            parser._raise("Expecting .text")
         
         while True:
             line = parser.next_interesting_line()
