@@ -30,6 +30,21 @@ class HTMLRendererWithTex(HTMLRenderer):
         resdata = self.renderer.render_resource(hash)
         return self.template.render(resdata = resdata, alt = alt)
 
+    def render_block_code(self, token):
+        """
+        Blackboard strips all newlines, including inside _code blocks_.
+        To patch this stupidity, we override the mistletoe method to
+        put them back by using break tags.
+        While we're at it, we render them in monospace.
+        """
+        template = '<pre style="font-family: monospace"><code{attr}>{inner}</code></pre>'
+        if token.language:
+            attr = ' class="{}"'.format('language-{}'.format(self.escape_html(token.language)))
+        else:
+            attr = ''
+        inner = html.escape(token.children[0].content).replace('\n', '<br/>')
+        return template.format(attr=attr, inner=inner)
+
 class HTMLRendererWithTexForHTML(HTMLRenderer):
     """
     This one is for creating the HTML output.
