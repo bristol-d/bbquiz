@@ -54,23 +54,7 @@
                     <outcomes>
                         <decvar varname="SCORE" vartype="Decimal" defaultval="0" minvalue="0" maxvalue="${question.config['points']}.00000"/>
                     </outcomes>
-                    <respcondition title="correct">
-                        <conditionvar>
-                            <and>
-                                % for option in question.options:
-                                    % if option.correct == True:
-                                <varequal respident="response" case="No">${option.uuid}</varequal>
-                                    % else:
-                                <not>
-                                    <varequal respident="response" case="No">${option.uuid}</varequal>
-                                </not>
-                                    % endif
-                                % endfor
-                            </and>
-                        </conditionvar>
-                        <setvar variablename="SCORE" action="Set">SCORE.max</setvar>
-                        <displayfeedback linkrefid="correct" feedbacktype="Response"/>
-                    </respcondition>
+                    ${question.scoring}
                     <respcondition title="incorrect">
                         <conditionvar>
                             <other/>
