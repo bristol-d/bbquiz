@@ -19,7 +19,7 @@ class Manifest:
     def __init__(self, resources):
         self.id = "man00001"
         self.resources = resources
-    
+
 class RenderedQuestion:
     def __init__(self, q):
         self.content = q
@@ -50,7 +50,7 @@ class Renderer:
     """
     Our own renderer.
     """
-    
+
     def __init__(self, package):
         self.package = package
         self.z = None
@@ -60,9 +60,9 @@ class Renderer:
         self._resid = 1000001
         self._resid_0 = 1000001
         self.files = pathlib.Path(__file__).parent.parent.joinpath('tmp').absolute()
-        self.html = HTMLRendererWithTex(self)
+        self.html = HTMLRendererWithTex(self, preamble = package.preamble)
         # this one is for output in the HTML file
-        self.html2 = HTMLRendererWithTexForHTML(self)
+        self.html2 = HTMLRendererWithTexForHTML(self, preamble = package.preamble)
 
     # This is so that the mistletoe renderer can call it
     def template_filename(self, t):
@@ -81,7 +81,7 @@ class Renderer:
 
 
     def render(self):
-        self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w", 
+        self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w",
             compression = zipfile.ZIP_STORED)
         for (counter, pool) in enumerate(self.package.pools):
             self._render_pool(counter, pool)
@@ -95,7 +95,7 @@ class Renderer:
         template = Template(filename = template_filename("html"))
         with open(self.package.name + ".html", "w") as file:
             file.write(template.render(
-                package = self.package, 
+                package = self.package,
                 fmt = self.render_text_html,
                 htmlcontent = self.render_text_html(self.package.htmlcontent)
             ))
@@ -106,7 +106,7 @@ class Renderer:
         """
         template = Template(filename = template_filename('manifest'))
         reslist = [
-            Resource(counter + 1, "assessment/x-bb-qti-pool", pool.name) 
+            Resource(counter + 1, "assessment/x-bb-qti-pool", pool.name)
             for (counter, pool) in enumerate(self.package.pools)
         ]
         reslist.append(Resource(len(reslist)+1, "resource/x-mhhe-course-cx", self.package.name))
@@ -120,9 +120,9 @@ class Renderer:
         self.z.writestr(reslist[-1].id + ".dat", pkg_template.render(name=self.package.name))
 
     def _render_pool(self, counter, pool):
-        questions = [ 
-            RenderedQuestion(q.render(c+1, self.bbid, self)) 
-            for (c, q) in enumerate(pool.questions) 
+        questions = [
+            RenderedQuestion(q.render(c+1, self.bbid, self))
+            for (c, q) in enumerate(pool.questions)
         ]
         template = Template(filename = template_filename("pool"))
         data = template.render(p=PoolResource(pool.name, self.bbid(), self.bbid(), questions))
@@ -161,7 +161,7 @@ class Renderer:
         )
         # and the image itself
         self.z.write(
-            filename, 
+            filename,
             f"csfiles/home_dir/LaTeX__xid-1000001_1/{hash}__xid-{rid}_1.png"
         )
         # Get the image width/height for embedding

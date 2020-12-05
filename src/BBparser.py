@@ -49,7 +49,7 @@ class Parser:
 
     def next_interesting_line(self):
         """
-        Get the next line that is not empty or a comment. 
+        Get the next line that is not empty or a comment.
         Returns None on EOF, otherwise the line contents.
         """
         while True:
@@ -104,6 +104,8 @@ class Parser:
                     self.has_name = self.N
             elif command == 'html':
                 self.package.htmlcontent = arg
+            elif command == 'preamble':
+                self.package.preamble = arg
             else:
                 self._raise("Expected a pool or filename command.")
 
@@ -111,7 +113,7 @@ class Parser:
         pool = types.Pool(name)
         while True:
             line = self.next_interesting_line()
-            if line is None: return pool 
+            if line is None: return pool
             command, arg = self.parse_command(line)
             if command == 'question':
                 self.parse_question(pool, arg)
@@ -130,7 +132,7 @@ class Parser:
 
         if type is None or type == "":
             type = "mcq"
-        
+
         if type in questions.QUESTION_TYPES:
             cls = questions.QUESTION_TYPES[type]
         else:

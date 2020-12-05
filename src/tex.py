@@ -31,7 +31,9 @@ class Tex:
 \begin{document}
 '''
         else:
-            self.pre = p
+            documentclass = r"\documentclass[varwidth]{standalone}"
+            begin = r"\begin{document}"
+            self.pre = '\n'.join([documentclass, p, begin]) + '\n' #Add a '\n' at the end so that the actual TeX content starts on a new line
 
     def ending(self, e = None):
         if e is None:
@@ -84,7 +86,7 @@ class Tex:
         hash = hashlib.sha256(input).hexdigest()
         output = pathlib.Path(self.cwd).joinpath(hash + ".png")
         if not output.exists():
-            self.run(input, hash, prepost = False)    
+            self.run(input, hash, prepost = False)
         localfolder = pathlib.Path(self.renderer.package.name + "_files")
         if not localfolder.exists():
             localfolder.mkdir()
@@ -93,5 +95,3 @@ class Tex:
         if not targetfile.exists():
             shutil.copy(self.cwd.joinpath(filename), targetfile)
         return hash
-
-    
