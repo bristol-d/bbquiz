@@ -5,7 +5,7 @@ class Package:
         self.name = "BBQuestions"
         self.pools = []
         self.htmlcontent = ""
-        self.preamble = ""
+        self.preamble = None
 
 class Pool:
     def __init__(self, name):
