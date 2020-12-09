@@ -96,6 +96,8 @@ Just after a `.pool` but before the first `.question` in the pool, you may inclu
 After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
 
   * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument. This information is not displayed to students.
+  * `.preamble ARG` declares a custom preamble for TeX, which goes between the `documentclass` and `begin{document}` lines. This allows you to add custom packages or declare macros.
+    If you do not use the preamble command, then by default `amsfonts` and `amsmath` are included; if you do set a preamble and want to continue to use these two packages then you need to declare them in your preamble again.
   * `.config KEY=VALUE` sets a global configuration option. Currently the following are supported:
     - `qn_width` (integer value): Zero-pad question numbers, for example with `qn_width=2` the questions are numbered Q01, Q02 etc. instead of Q1, Q2 etc. This is useful because when you import questions into blackboard, it displays question "numbers" (which are really strings) in lexicographic order.
 
@@ -259,3 +261,18 @@ END
 ```
 
 This puts the formula inline in the rendered output, so you get "Consider the formula ..." all on one line. If you want the formula to stand on its own, include an empty line _before_ the first `$` sign. This causes a paragraph break in markdown (same rule as in Tex' paragraph mode), and as long as there are no empty lines between the opening and closing `$` sign, the formula will become a paragraph of its own in the output.
+
+TeX is by default compiled as follows:
+
+    \documentclass[varwidth]{standalone} % makes the bounding box exactly as big as it needs to be
+    % START PREAMBLE
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    % END PREAMBLE
+    \begin{document}
+    % YOUR TEXT HERE
+    \end{document}
+
+The code you write in the `$ ... $` tag is inserted in the _your text here_ line. If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
+
+The TeX cache maintained by this program stores images based on the hash of the entire document sent to TeX, so you can edit your preamble as you like and you do not have to worry about an old version of a cached file being included by accident.
