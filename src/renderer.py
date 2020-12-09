@@ -133,15 +133,9 @@ class Renderer:
         self.z.writestr(reslist[-1].id + ".dat", pkg_template.render(name=self.package.name))
 
     def _render_pool(self, counter, pool):
-<<<<<<< HEAD
         questions = [ 
             RenderedQuestion(q.render(self.qn(c+1), self.bbid, self)) 
             for (c, q) in enumerate(pool.questions) 
-=======
-        questions = [
-            RenderedQuestion(q.render(c+1, self.bbid, self))
-            for (c, q) in enumerate(pool.questions)
->>>>>>> soo-dev
         ]
         template = Template(filename = template_filename("pool"))
         data = template.render(p=PoolResource(

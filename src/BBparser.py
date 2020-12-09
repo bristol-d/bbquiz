@@ -104,7 +104,6 @@ class Parser:
                     self.has_name = self.N
             elif command == 'html':
                 self.package.htmlcontent = arg
-<<<<<<< HEAD
             elif command == 'config':
                 m = re.match("([a-zA-Z0-9_]+) *=(.*)", arg)
                 if m:
@@ -113,10 +112,8 @@ class Parser:
                     self.package.config[key]=value
                 else:
                     self._raise("Error in package-level config line, expected argument 'key=value'")
-=======
             elif command == 'preamble':
                 self.package.preamble = arg
->>>>>>> soo-dev
             else:
                 self._raise("Expected a pool or filename command.")
 
