@@ -10,20 +10,21 @@ class MaqOption:
         self.correct = correct
         self.uuid = uuid.uuid4().hex
         self.rendered = None
+        self.points = None
 
 class Maq(question.Question):
     """
     Multiple answer question.
     The difference to multiple choice is that you select all that apply.
 
-    Partial scoring lets you implement marks per option, currently limited to at most 5 options though
-    as the encoding of the scoring rule is exponential in the size of the number of options.
-    The argument is either a single number (same number of points per option)
-    or a comma-separated list of numbers (for each option).
+    Partial scoring lets you implement marks per option, either as 
+    'partial = N' (N marks per option)
+    or 'partial = 1,1,2, ...' with a comma-separated list of values that represent the marks per
+    option. In this case the length of the list must match the number of options.
     """
 
     def __init__(self):
-        super().__init__(confopts = {'partial': '1'})
+        super().__init__(confopts = {'partial': 'false'})
         self.options = []
         self.text = None
 
@@ -61,7 +62,19 @@ class Maq(question.Question):
         self.rendered = renderer.render_text(self.text)
         for option in self.options:
             option.rendered = renderer.render_text(option.text)
-        self.scoring = self.render_standard_scoring()
+        if 'partial' not in self.config or self.config['partial'] == 'false':
+            self.scoring = self.render_standard_scoring()
+        else:
+            partial = self.config['partial']
+            if re.match(partial, '[0-9]+'):
+                points = int(partial)
+                if points == 0:
+                    raise Exception(f"Invalid number of points for partial marks in question starting at line {self.startline}, must be a positive integer.")
+                # same marks per question
+                for option in self.options:
+                    option.points = points
+                self.scoring = self.render_partial_scoring()
+
         fragment = template.render(
             question = self,
             title = qn,
