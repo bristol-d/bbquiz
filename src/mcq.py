@@ -11,7 +11,7 @@ class McqOption:
 
 class Mcq(question.Question):
     def __init__(self):
-        super().__init__()
+        super().__init__(confopts = {'random_order': 'no' })
         self.options = []
         self.index = None
 
@@ -60,6 +60,18 @@ class Mcq(question.Question):
         """
         Render a question 'in house'.
         """
+        if 'random_order' in self.confopts:
+            ro = self.confopts['random_order']
+            if ro == "yes" or ro == "Yes":
+                ro = "Yes"
+            elif ro == "no" or ro == "No":
+                ro = "No"
+            else:
+                raise Exception(f"Invalid mcq random_order value, expected 'yes' or 'no' in question starting at line {self.startline}")
+            self.random_order = ro
+        else:
+            self.random_order = "No"
+
         assert self.index is not None, "MCQ with no correct answer"
         template = Template(filename = template_filename("mcq"))
         self.rendered = renderer.render_text(self.stem)

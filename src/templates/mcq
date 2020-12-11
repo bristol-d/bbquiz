@@ -31,10 +31,10 @@
                         </flow>
                         <flow class="RESPONSE_BLOCK">
                             <response_lid ident="response" rcardinality="Single" rtiming="No">
-                                <render_choice shuffle="Yes" minnumber="0" maxnumber="0">
+                                <render_choice shuffle="${question.random_order}" minnumber="0" maxnumber="0">
                         % for opt in question.options:
                                     <flow_label class="Block">
-                                        <response_label ident="${opt.id}" shuffle="Yes" rarea="Ellipse" rrange="Exact">
+                                        <response_label ident="${opt.id}" shuffle="${question.random_order}" rarea="Ellipse" rrange="Exact">
                                             <flow_mat class="FORMATTED_TEXT_BLOCK">
                                                 <material>
                                                     <mat_extension>
