@@ -1,0 +1,14 @@
+.filename oneimage
+.pool question with one image
+.question mcq
+    .text <<END
+What is the animal in the following image called?
+
+![picture of animal](animal.png)
+
+$X$
+END
+    .option Bored Panda
+    .answer Red Panda
+    .option Amur Tiger
+    .option Tree Sloth

@@ -33,12 +33,13 @@ class HTMLRendererWithTex(HTMLRenderer):
 
     def render_image(self, token):
         resdata = self.renderer.render_image(token)
-        template = '<img src="{}" alt="{}"{} />'
+        template = '<img src="@X@EmbeddedFile.requestUrlStub@X@bbcswebdav/xid-{}_1" alt="{}" {}>'
+        # template = '<img src="{}" alt="{}"{} />'
         if token.title:
             title = ' title="{}"'.format(self.escape_html(token.title))
         else:
             title = ''
-        return template.format(token.src, self.render_to_plain(token), title)
+        return template.format(resdata.resid, self.render_to_plain(token), title)
 
 class HTMLRendererWithTexForHTML(HTMLRenderer):
     """

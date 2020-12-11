@@ -46,6 +46,8 @@ class ResourceFileData:
         self.hash = hash
         self.w = w
         self.h = h
+    def __str__(self):
+        return f"ResourceFileData(resid={self.resid},hash={self.hash},w={self.w},h={self.h})"
 
 class Renderer:
     """
@@ -210,15 +212,20 @@ class Renderer:
         # Write to Zip file
         rid = self.resid()
         template = Template(filename = template_filename("resource_image"))
+        # the resource id has to go before the extension
+        suffix = filepath.suffix
+        basename = filepath.name[:-len(suffix)]
+        resname = f"{basename}__xid-{rid}_1{suffix}"
+
         # the xml file
         self.z.writestr(
-            f"csfiles/home_dir/LaTeX__xid-1000001_1/{filepath.name}.xml",
-            template.render(filename=filepath.name, resid=rid, pkgname = self.package.name)
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{resname}.xml",
+            template.render(filename=f"{resname}", resid=rid, pkgname = self.package.name)
         )
         # and the image itself
         self.z.write(
             filepath,
-            f"csfiles/home_dir/LaTeX__xid-1000001_1/{filepath.name}"
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{resname}"
         )
 
         # Get the image width/height for embedding
