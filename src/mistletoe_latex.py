@@ -2,6 +2,7 @@
 
 import re
 import html
+import pathlib
 from mistletoe.span_token import SpanToken, RawText
 from mistletoe.html_renderer import HTMLRenderer
 import tex
@@ -10,7 +11,7 @@ from mako.template import Template
 class InlineMath(SpanToken):
     pattern = re.compile(r"[$](([^$]|\\[$])+)[$](?![$])")
     parse_inner = False
-    parse_group = 1 
+    parse_group = 1
 
 class HTMLRendererWithTex(HTMLRenderer):
 
@@ -29,6 +30,15 @@ class HTMLRendererWithTex(HTMLRenderer):
             alt = html.escape(token.content, quote = True)
         resdata = self.renderer.render_resource(hash)
         return self.template.render(resdata = resdata, alt = alt)
+
+    def render_image(self, token):
+        resdata = self.renderer.render_image(token)
+        template = '<img src="{}" alt="{}"{} />'
+        if token.title:
+            title = ' title="{}"'.format(self.escape_html(token.title))
+        else:
+            title = ''
+        return template.format(token.src, self.render_to_plain(token), title)
 
 class HTMLRendererWithTexForHTML(HTMLRenderer):
     """
@@ -50,3 +60,10 @@ class HTMLRendererWithTexForHTML(HTMLRenderer):
         resdata = self.renderer.render_resource(hash)
         localfolder = self.renderer.package.name + "_files"
         return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
+
+    def render_image(self, token):
+        filepath = pathlib.Path(token.src)
+        resdata = self.renderer.render_image(token)
+        localfolder = self.renderer.package.name + "_files"
+        template = Template(filename = self.renderer.template_filename("html_image"))
+        return template.render(resdata = resdata, filename = filepath.name, alt = self.render_to_plain(token), localfolder = localfolder)

@@ -4,6 +4,7 @@ import zipfile
 import pathlib
 import mistletoe
 import html
+import shutil
 
 from mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
@@ -55,6 +56,7 @@ class Renderer:
         self.package = package
         self.z = None
         self.resmap = {}
+        self.imgmap = {}
         self.resources = False
         self._bbid = 3191882 # why ???
         self._resid = 1000001
@@ -171,6 +173,61 @@ class Renderer:
         self.resmap[hash] = ResourceFileData(rid, hash, width, height)
         print(f"Resource {hash} mapped to id {rid}")
         return self.resmap[hash]
+
+    def render_image(self, token):
+        """
+        Include a resource file (image).
+        Maintains a cache in imgmap (key = filepath) so we don't include the same thing multiple times.
+        """
+        if self.resources == False:
+            # write out the package header
+            pkgtemplate = Template(filename = template_filename("resource_header"))
+            pkgtext = pkgtemplate.render(pkgname = self.package.name)
+            self.z.writestr("csfiles/home_dir/LaTeX__xid-1000001_1.xml",
+                pkgtext
+            )
+            self.resources = True
+
+        # If cache found, return
+        filepath = pathlib.Path(token.src)
+        if filepath in self.imgmap:
+            return self.imgmap[filepath]
+
+        # Check if the image file exists
+        if filepath.exists() and filepath.is_file():
+           pass
+        else:
+            raise Exception(f"render_image: Image {str(filepath)} is not found.")
+
+        # Write to localfolder
+        localfolder = pathlib.Path(self.package.name + "_files")
+        if not localfolder.exists():
+            localfolder.mkdir()
+        targetfile = localfolder.joinpath(filepath.name)
+        if not targetfile.exists():
+            shutil.copy(filepath, targetfile)
+
+        # Write to Zip file
+        rid = self.resid()
+        template = Template(filename = template_filename("resource_image"))
+        # the xml file
+        self.z.writestr(
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{filepath.name}.xml",
+            template.render(filename=filepath.name, resid=rid, pkgname = self.package.name)
+        )
+        # and the image itself
+        self.z.write(
+            filepath,
+            f"csfiles/home_dir/LaTeX__xid-1000001_1/{filepath.name}"
+        )
+
+        # Get the image width/height for embedding
+        with Image.open(filepath) as image:
+            width, height = image.size
+
+        self.imgmap[filepath] = ResourceFileData(rid, None, width, height)
+        print(f"Resource {filepath} mapped to id {rid}")
+        return self.imgmap[filepath]
 
     def render_text_html(self, text):
         """

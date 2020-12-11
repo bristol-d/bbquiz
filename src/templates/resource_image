@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lom>
+    <relation>
+        <resource>
+            <identifier>${resid}#/courses/${pkgname}/LaTeX__xid-1000001_1\${filename}</identifier>
+        </resource>
+    </relation>
+</lom>
