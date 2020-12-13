@@ -38,6 +38,7 @@ class Numeric(question.Question):
 
     def render(self, counter, idgen, renderer):
         template = Template(filename = template_filename("numeric"))
+        self.note = renderer.render_text_html(self.note)
         self.rendered = renderer.render_text(self.text)
         return template.render(question = self, id = idgen(), title = "Q" + str(counter))
 
