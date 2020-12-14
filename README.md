@@ -81,11 +81,25 @@ The argument to a `.question` command is the question type. If you give a questi
 
 Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
 
+Just after a `.pool` but before the first `.question` in the pool, you may include an `.instructions` command. Its argument is text (including markdown, HTML and TeX) that is displayed to students at the top of the exam page, above the questions, under the heading _Instructions:_. You could use this, for example, for information like this if appropriate:
+
+    .instructions <<END
+    Every question in this part of the exam is worth 3 marks
+    and has exactly one right answer.
+
+    You get 3 marks for selecting the right answer and 0 marks
+    for selecting an incorrect answer or no answer at all.
+    END
+
 ## Configuration commands
 
 After `.filename`, which must be the first command, but before starting the first pool, you may optionally include any of the following commands:
 
-  * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument.
+  * `.html ARG` inserts the argument into the HTML file for output. Used together with a here-document, you can use this to create a custom stylesheet for example, or to include extra content describing your file. You can use markdown and HTML in the argument. This information is not displayed to students.
+  * `.preamble ARG` declares a custom preamble for TeX, which goes between the `documentclass` and `begin{document}` lines. This allows you to add custom packages or declare macros.
+    If you do not use the preamble command, then by default `amsfonts` and `amsmath` are included; if you do set a preamble and want to continue to use these two packages then you need to declare them in your preamble again.
+  * `.config KEY=VALUE` sets a global configuration option. Currently the following are supported:
+    - `qn_width` (integer value): Zero-pad question numbers, for example with `qn_width=2` the questions are numbered Q01, Q02 etc. instead of Q1, Q2 etc. This is useful because when you import questions into blackboard, it displays question "numbers" (which are really strings) in lexicographic order.
 
 ## Question configuration
 
@@ -146,6 +160,39 @@ Numbers can be:
   - A floating point value, with an optional leading minus sign, where at least one digit before the decimal point is required (so 0.2 is ok but .2 is not).
 
 Exponential notation (1.0e2) is currently not supported.
+
+### Jumbled Sentence
+
+    .question jumbled
+        .text Complete the poem: The {2} {3} on the {1}.
+        .option mat
+        .option cat
+        .option sat
+        .option pat
+        .option fat
+
+A jumbled sentence question takes a HTML/markdown text and a list of options. The option values must be plain text, not HTML, as they end up in a dropdown box.
+
+In the text, you can write placeholders with the syntax `{n}` where `n` is the number of the correct option in the list - counting starts at one, not zero.
+
+_Note: internally, blackboard uses the syntax `[tag]` to denote placeholders, so you must not use square brackets in your question text itself._
+
+_If you let the student see a summary of all the questions and points, but not the answers, at the end of the test then this question would be shown as `Complete the poem: the [a] [b] on the [c].` using tags that are simply consecutive letter sequences, so this does not give the answer away. The only reason that the answer information is encoded in the question text itself for this question type is to make the input file format a bit easier._
+
+The normal scoring method for this kind of question is full marks for getting every choice right and 0 marks otherwise. You can change this by adding the line `.config partial=true` after the `.question` line but before the `.text` one, in which case each box in which the student selects an answer gives 1/N of the total marks for the question if correct, and 0 marks otherwise, where N is the total number of option boxes in the question.
+
+### Fill in the blanks
+
+    .question blanks
+        .text Complete the poem: The {} sat on the {}.
+        .answer cat
+        .answer mat
+
+A fill-in-the-blanks question takes a text with one or more `{}` placeholders, which get displayed to the student as text boxes. You must provide the same number of `.answer` lines, each taking a plain text argument.
+
+_Internally, blackboard uses placeholders of the form `[a], [b], ...`. You must not use anything in the question text that renders to something looking like a blackboard placeholder. Markdown links are fine because these get turned into HTML before they reach blackboard._
+
+Currently, the scoring system implemented is full marks for an exact match everywhere, 0 marks otherwise - partial marks are on the TODO list.
 
 ## Markdown, HTML and Tex
 
@@ -214,3 +261,18 @@ END
 ```
 
 This puts the formula inline in the rendered output, so you get "Consider the formula ..." all on one line. If you want the formula to stand on its own, include an empty line _before_ the first `$` sign. This causes a paragraph break in markdown (same rule as in Tex' paragraph mode), and as long as there are no empty lines between the opening and closing `$` sign, the formula will become a paragraph of its own in the output.
+
+TeX is by default compiled as follows:
+
+    \documentclass[varwidth]{standalone} % makes the bounding box exactly as big as it needs to be
+    % START PREAMBLE
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    % END PREAMBLE
+    \begin{document}
+    % YOUR TEXT HERE
+    \end{document}
+
+The code you write in the `$ ... $` tag is inserted in the _your text here_ line. If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
+
+The TeX cache maintained by this program stores images based on the hash of the entire document sent to TeX, so you can edit your preamble as you like and you do not have to worry about an old version of a cached file being included by accident.

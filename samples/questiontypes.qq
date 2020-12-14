@@ -2,6 +2,10 @@
 
 .pool Different question types
 
+.instructions <<END
+This is a pool of questions that shows the different possible question types.
+END
+
 .question mcq
     .text What is the best colour in the world?
     .option red
@@ -27,3 +31,18 @@
 .question numeric
     .text What is the square root of 2?
     .answer 1.414 delta 0.01
+
+.question jumbled
+    .text The {2} {3} on the {4}.
+    .option fat
+    .option cat
+    .option sat
+    .option mat
+    .option pat
+
+.question blanks
+    .text The {} {} on the {}.
+    .answer cat
+    .answer sat
+    .answer mat
+

@@ -1,0 +1,16 @@
+.filename questionwithlist
+
+.pool question with list
+
+.question mcq
+    .text <<END
+Consider the following list:
+
+  1. Salmon
+  2. Trout
+  3. Whale
+
+Are all of these fish?
+END
+    .option Yes
+    .answer No

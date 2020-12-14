@@ -104,6 +104,14 @@ class Parser:
                     self.has_name = self.N
             elif command == 'html':
                 self.package.htmlcontent = arg
+            elif command == 'config':
+                m = re.match("([a-zA-Z0-9_]+) *=(.*)", arg)
+                if m:
+                    key = m.group(1)
+                    value = m.group(2).strip()
+                    self.package.config[key]=value
+                else:
+                    self._raise("Error in package-level config line, expected argument 'key=value'")
             elif command == 'preamble':
                 self.package.preamble = arg
             else:
@@ -117,6 +125,8 @@ class Parser:
             command, arg = self.parse_command(line)
             if command == 'question':
                 self.parse_question(pool, arg)
+            elif command == 'instructions':
+                pool.instructions = arg
             elif command == 'pool':
                 # put this back rather than recurse, it's cleaner
                 # and python isn't guaranteed to do tail recursion

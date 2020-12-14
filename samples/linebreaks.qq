@@ -1,0 +1,16 @@
+.filename linebreaks
+.pool line breaks test
+.question mcq
+	.text <<END
+Consider the following code:
+
+    a = 1
+    b = 2
+	    // this comment is indented
+    c = 3
+
+Do the line breaks render correctly in blackboard?
+END
+	.option Yes, because that would make sense
+	.answer Only if you code a workaround
+	.option Never

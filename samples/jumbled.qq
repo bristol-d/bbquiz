@@ -1,0 +1,23 @@
+# Sample file with only one question.
+
+.filename jumbled
+
+.pool Jumbled Sentence Pool
+
+.question jumbled
+    .text Complete the following poem: The {2} {3} on the {5}.
+    .option fat
+    .option cat
+    .option sat
+    .option pat
+    .option mat
+
+# and here's one with partial marks
+.question jumbled
+    .config partial=true
+    .text The {2} {3} on the {5}.
+    .option fat
+    .option cat
+    .option sat
+    .option pat
+    .option mat

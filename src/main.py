@@ -12,20 +12,6 @@ def render(package):
     """
     Renderer(package).render()
 
-
-def renderBB(package):
-    """
-    Call BlackboardQuiz to render a package.
-    """
-    counter = 1
-    with BlackboardQuiz.Package(package.name) as pk:
-        for pool in package.pools:
-            with pk.createPool(pool.name, description = "", instructions = "") as pl:
-                for question in pool.questions:
-                    question.renderBB(pl, counter)
-                    counter += 1
-
-
 if len(sys.argv) < 2:
     print(f"Usage: {sys.argv[0]} FILENAME")
     print("where FILENAME is a file in the MCQ format")
@@ -41,8 +27,4 @@ except OSError:
     print(f"I/O error on file {sys.argv[1]}")
     exit(3)
 
-if len(sys.argv) >= 3 and sys.argv[2] == '-o':
-    import BlackboardQuiz
-    renderBB(package)
-else:
-    render(package)
+render(package)

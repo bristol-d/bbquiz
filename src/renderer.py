@@ -26,11 +26,12 @@ class RenderedQuestion:
         self.content = q
 
 class PoolResource:
-    def __init__(self, name, id, sid, qs):
+    def __init__(self, name, id, sid, qs, instructions):
         self.name = name
         self.id = id
         self.sid = sid
         self.questions = qs
+        self.instructions = instructions
 
 def template_filename(name):
     mydir = pathlib.Path(__file__).parent.absolute()
@@ -68,13 +69,25 @@ class Renderer:
         # this one is for output in the HTML file
         self.html2 = HTMLRendererWithTexForHTML(self, preamble = package.preamble)
 
+    def qn(self, c):
+        """
+        Return a formatted question number, e.g. with leading zeroes.
+        """
+        if 'qn_width' in self.package.config:
+            w = int(self.package.config['qn_width'])
+            s = f"Q%0{w}i"
+            return s % c
+        else:
+            return "Q" + str(c)
+
     # This is so that the mistletoe renderer can call it
     def template_filename(self, t):
         return template_filename(t)
 
     def bbid(self):
         self._bbid += 1
-        return "_" + str(self._bbid) + "_1"
+        r = "_" + str(self._bbid) + "_1"
+        return r
 
     def resid(self):
         """
@@ -124,12 +137,18 @@ class Renderer:
         self.z.writestr(reslist[-1].id + ".dat", pkg_template.render(name=self.package.name))
 
     def _render_pool(self, counter, pool):
-        questions = [
-            RenderedQuestion(q.render(c+1, self.bbid, self))
-            for (c, q) in enumerate(pool.questions)
+        questions = [ 
+            RenderedQuestion(q.render(self.qn(c+1), self.bbid, self)) 
+            for (c, q) in enumerate(pool.questions) 
         ]
         template = Template(filename = template_filename("pool"))
-        data = template.render(p=PoolResource(pool.name, self.bbid(), self.bbid(), questions))
+        data = template.render(p=PoolResource(
+            name = pool.name, 
+            id = self.bbid(), 
+            sid = self.bbid(), 
+            qs = questions, 
+            instructions = self.render_text(pool.instructions)
+        ))
         datid = Resource(counter + 1, None, None).id
         print("writing " + datid + ".dat")
         self.z.writestr(datid + ".dat", data)
@@ -257,6 +276,7 @@ class Renderer:
         In step 1, if the whole thing is a single paragraph, then we do not want to wrap it
         in p tags.
         """
+        if text == '': return text
         ast = mistletoe.Document(text)
         # check if we want to 'un-paragraph' it
         if len(ast.children) == 1 and ast.children[0].__class__.__name__ == "Paragraph":

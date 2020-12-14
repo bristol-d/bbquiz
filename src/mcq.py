@@ -56,7 +56,7 @@ class Mcq(question.Question):
         self.index = correct
         return self
 
-    def render(self, counter, idgen, renderer):
+    def render(self, qn, idgen, renderer):
         """
         Render a question 'in house'.
         """
@@ -80,7 +80,7 @@ class Mcq(question.Question):
         return template.render(
             question = self,
             id = idgen(),
-            title = "Q" + str(counter)
+            title = qn
         )
 
     def display(self, fmt):
