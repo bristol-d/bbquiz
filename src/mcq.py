@@ -50,7 +50,7 @@ class Mcq(question.Question):
                 parser._raise("Unexpected command.")
 
         if correct is None:
-            parser._raise("Question with no correct answer starting at line " + str(startline))
+            parser._raise("Question with no correct answer starting at line " + str(self.startline))
 
         self.stem = text
         self.index = correct
