@@ -147,6 +147,15 @@ It should be possible to implement more complex scoring rules as blackboard's in
 
 A short-answer question simply contains a text (that can include markdown/HTML/Tex) and displays a rich-text box for students to answer. It cannot be automatically marked, but you can mark it manually in the blackboard grade centre.
 
+### Long answer (essay)
+
+```
+.question longanswer
+    .text Write an essay on the Swiss political system.
+```
+
+Essay questions seem functionally identical to short answer questions, they also display a rich text box for students to answer in.
+
 ### Numeric
 
     .question numeric

@@ -46,3 +46,8 @@ END
     .answer sat
     .answer mat
 
+.question shortanswer
+    .text Write a poem in the text box.
+
+.question longanswer
+    .text Write an essay on trade within the European Union.
