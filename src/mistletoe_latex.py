@@ -13,16 +13,31 @@ class InlineMath(SpanToken):
     parse_inner = False
     parse_group = 1
 
+class DisplayMath(SpanToken):
+    pattern = re.compile(r"\$\$(([^$]|\\[$])+)\$\$")
+    parse_inner = False
+    parse_group = 1
+
 class HTMLRendererWithTex(HTMLRenderer):
 
     def __init__(self, renderer, preamble = None):
-        super().__init__(InlineMath)
+        super().__init__(InlineMath, DisplayMath)
         self.tex = tex.Tex(preamble = preamble, renderer = renderer)
         self.renderer = renderer
         self.template = Template(filename = renderer.template_filename("embed"))
 
     def render_inline_math(self, token):
         hash = self.tex.render(token.content)
+        # alt text. heuristic: if it's only one line, it can go in
+        if '\n' in token.content:
+            alt = "tex formula"
+        else:
+            alt = html.escape(token.content, quote = True)
+        resdata = self.renderer.render_resource(hash)
+        return self.template.render(resdata = resdata, alt = alt)
+
+    def render_display_math(self, token):
+        hash = self.tex.render(token.content, displaymath = True)
         # alt text. heuristic: if it's only one line, it can go in
         if '\n' in token.content:
             alt = "tex formula"
@@ -47,13 +62,23 @@ class HTMLRendererWithTexForHTML(HTMLRenderer):
     """
 
     def __init__(self, renderer, preamble = None):
-        super().__init__(InlineMath)
+        super().__init__(InlineMath, DisplayMath)
         self.tex = tex.Tex(preamble = preamble, renderer = renderer)
         self.renderer = renderer
         self.template = Template(filename = renderer.template_filename("html_embed"))
 
     def render_inline_math(self, token):
         hash = self.tex.render(token.content)
+        if '\n' in token.content:
+            alt = "tex formula"
+        else:
+            alt = html.escape(token.content, quote = True)
+        resdata = self.renderer.render_resource(hash)
+        localfolder = self.renderer.package.name + "_files"
+        return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
+
+    def render_display_math(self, token):
+        hash = self.tex.render(token.content, displaymath = True)
         if '\n' in token.content:
             alt = "tex formula"
         else:
