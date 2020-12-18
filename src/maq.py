@@ -43,7 +43,7 @@ class Maq(question.Question):
                 break
             else:
                 parser._raise("Unexpected command.")
-        
+
         if len(self.options) == 0:
             parser._raise("Question with no answers starting at line " + str(startline))
 
@@ -52,6 +52,7 @@ class Maq(question.Question):
     def render(self, qn, idgen, renderer):
         assert len(self.options) > 0, "MAQ with no answers"
         template = Template(filename = template_filename("maq"))
+        self.note = renderer.render_text_html(self.note)
         self.rendered = renderer.render_text(self.text)
         for option in self.options:
             option.rendered = renderer.render_text(option.text)

@@ -74,6 +74,7 @@ class Mcq(question.Question):
 
         assert self.index is not None, "MCQ with no correct answer"
         template = Template(filename = template_filename("mcq"))
+        self.note = renderer.render_text_html(self.note)
         self.rendered = renderer.render_text(self.stem)
         for option in self.options:
             option.rendered = renderer.render_text(option.text)

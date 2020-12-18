@@ -73,12 +73,14 @@ class Tex:
         # and convert to png
         self._run(["dvipng", hash + ".dvi", "-o", hash + ".png"], self.cwd)
 
-    def render(self, source, displaymath = False):
+    def render(self, source, displaymath = False, texblock = False):
         """
         Render a formula (optionally as display math) and return the hash
         of the created output.
         """
-        if displaymath:
+        if texblock:
+            input = self.pre + source + self._ending
+        elif displaymath:
             input = self.pre + "\\begin{align*}\n" + source + "\\end{align*}\n" + self._ending
         else:
             input = self.pre + "$" + source + "$\n" + self._ending

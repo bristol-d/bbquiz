@@ -1,6 +1,5 @@
 __pycache__
 samples/*.zip
-samples/*.png
 samples/out
 samples/*.html
 samples/*_files

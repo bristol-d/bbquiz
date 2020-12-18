@@ -38,6 +38,7 @@ class ShortAnswer(question.Question):
 
     def render(self, qn, idgen, renderer):
         assert self.text is not None, "Short answer question with no question text"
+        self.note = renderer.render_text_html(self.note)
         self.rendered = renderer.render_text(self.text)
         template = Template(filename = template_filename("shortanswer"))
         fragment = template.render(
