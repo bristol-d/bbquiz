@@ -21,3 +21,11 @@
     .answer blue
     .option green
     .option pink
+
+.question maq
+    .config partial = 25
+    .text Which of the following colours are darkish?
+    .option Peach
+    .answer Oxford blue
+    .answer Burgundy
+    .option Spring green

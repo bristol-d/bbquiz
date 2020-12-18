@@ -2,7 +2,7 @@ from mako.template import Template
 import uuid
 from renderer import template_filename
 import question
-from xmlgen import node as XML
+import re
 
 class MaqOption:
     def __init__(self, text, correct):
@@ -17,16 +17,15 @@ class Maq(question.Question):
     Multiple answer question.
     The difference to multiple choice is that you select all that apply.
 
-    Partial scoring lets you implement marks per option, either as 
-    'partial = N' (N marks per option)
-    or 'partial = 1,1,2, ...' with a comma-separated list of values that represent the marks per
-    option. In this case the length of the list must match the number of options.
+    Partial scoring lets you implement marks per option, using
+    'partial = N' (N marks per option).
     """
 
     def __init__(self):
         super().__init__(confopts = {'partial': 'false'})
         self.options = []
         self.text = None
+        self.partialcredit = 'false'
 
     def parse2(self, parser, command, arg):
         if command == 'text':
@@ -62,19 +61,22 @@ class Maq(question.Question):
         self.rendered = renderer.render_text(self.text)
         for option in self.options:
             option.rendered = renderer.render_text(option.text)
-        if 'partial' not in self.config or self.config['partial'] == 'false':
-            self.scoring = self.render_standard_scoring()
-        else:
+        conditions = []            
+        if 'partial' in self.config:
+            self.partialcredit = 'true'
             partial = self.config['partial']
-            if re.match(partial, '[0-9]+'):
+            if re.match('[0-9]+', partial):
                 points = int(partial)
                 if points == 0:
                     raise Exception(f"Invalid number of points for partial marks in question starting at line {self.startline}, must be a positive integer.")
                 # same marks per question
+                p = 0
                 for option in self.options:
                     option.points = points
-                self.scoring = self.render_partial_scoring()
-
+                    p += points
+                self.points = p
+            else:
+                raise Exception(f"Invalid number of points for partial marks in question starting at line {self.startline}, must be a positive integer. Got '{partial}'.")
         fragment = template.render(
             question = self,
             title = qn,
@@ -90,11 +92,21 @@ class Maq(question.Question):
             if num < len(lines) - 1: b.append("\n")
         return "".join(b)
 
+    def resp_line(self, option, negate = False, indent = 28):
+        line = f'<varequal respident="response" case="No">{option.uuid}</varequal>'
+        if negate:
+            line = f'<not>\n{" " * (indent + 4)}{line}\n{" " * indent}</not>'
+        return line
+
     def render_partial_scoring(self):
-        if len(self.options) > 5:
-            raise Exception(f"Partial scoring is currently only available for max 5 options per question, in question starting at line {self.startline}")
-        conditions = []
-        # TODO
+        blocks = []
+        self.points = 0
+        for option in self.options:
+            self.points += option.points
+            c = self.resp_line(option, not option.correct)
+            blocks.append(self.resp_block(c, option.points, "correct"))
+        self.config['points'] = str(self.points)
+        return self._write_indented(20, blocks)
 
     def render_standard_scoring(self):
         conditions = []
@@ -107,6 +119,15 @@ class Maq(question.Question):
                 conditions.append("</not>")
         conditions = self._write_indented(32, conditions)
         return self.score_block(conditions, "SCORE.max")
+
+    def resp_block(self, condition, points, refid = "correct"):
+        return f"""<respcondition title="correct">
+                        <conditionvar>
+                            {condition}
+                        </conditionvar>
+                        <setvar variablename="SCORE" action="Set">{points}</setvar>
+                        <displayfeedback linkrefid="{refid}" feedbacktype="Response"/>
+                    </respcondition>"""
 
     def score_block(self, conditions, points, refid = "correct"):
         return f"""<respcondition title="correct">
