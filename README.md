@@ -225,7 +225,15 @@ What is the **capital** of Switzerland?
     END    
 ```
 
-On top of this, I have implemented inline Tex by defining a new span token `$...$` with similar parsing behaviour to the backtick, except that the contents are rendered by calling Tex to produce a PNG image and then embedding this in the ZIP file. The contents of the tag are interpreted in Tex' math mode, not paragraph mode.
+On top of this, we have implemented inline Tex by defining the following new span tokens:
+
+  * `$...$` typesets its contents as a Tex formula, similar to using the same syntax in Tex.
+  * `$$...$$` typesets its contents as Tex _display math_ - to be precise it wraps it in an `align*` block.
+  * `$$$...$$$` typesets its contents as raw Tex, e.g. in paragraph mode.
+
+In all cases, the content (with suitable delimiters) is piped through Tex and the result is put in a PNG image, which is then embedded in the ZIP file for upload.
+
+We call `latex`, not `pdflatex`, as the pipeline is currently `latex` for `tex -> dvi` then `dvipng` for `dvi -> png`. This produces slightly higher quality images than going through `pdflatex`, which would (anti)aliasing artifacts especially for tiny fonts such as exponents and subscripts. However, this means that packages which rely on the pdf driver such as `tikz/pgf` will currently not work.
 
 The way the Tex token is implemented means that you are subject to the markdown parser's rules for span tokens, for example this works to create an unordered list whose elements are Tex formulas:
 
@@ -282,6 +290,6 @@ TeX is by default compiled as follows:
     % YOUR TEXT HERE
     \end{document}
 
-The code you write in the `$ ... $` tag is inserted in the _your text here_ line. If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
+The code you write in the `$ ... $` tag is inserted in the _your text here_ line, with the appropriate delimiters (single `$` becomes `$`, double `$` becomes `\begin{align*}...\end{align*}`, triple `$` produces no extra delimiters at all). If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
 
 The TeX cache maintained by this program stores images based on the hash of the entire document sent to TeX, so you can edit your preamble as you like and you do not have to worry about an old version of a cached file being included by accident.
