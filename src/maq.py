@@ -17,6 +17,7 @@ class Maq(question.Question):
     Multiple answer question.
     The difference to multiple choice is that you select all that apply.
 
+<<<<<<< HEAD
     Partial scoring lets you implement marks per option, either as 
     'partial = N' (N marks per option)
     or 'partial = 1,1,2, ...' with a comma-separated list of values that represent the marks per
@@ -25,6 +26,16 @@ class Maq(question.Question):
 
     def __init__(self):
         super().__init__(confopts = {'partial': 'false'})
+=======
+    Partial scoring lets you implement marks per option, currently limited to at most 5 options though
+    as the encoding of the scoring rule is exponential in the size of the number of options.
+    The argument is either a single number (same number of points per option)
+    or a comma-separated list of numbers (for each option).
+    """
+
+    def __init__(self):
+        super().__init__(confopts = {'partial': '1'})
+>>>>>>> 93a945e675fa9f3c5cb61199d6c2e0e73e2fb9f4
         self.options = []
         self.text = None
 
