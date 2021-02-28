@@ -20,13 +20,13 @@ class Jumbled(question.Question):
         self.partial = 'false'
         self.counter = 0
         self.mapping = {}
-        
+
     def parse2(self, parser, command, arg):
         if command == 'text':
             self.text = arg
         else:
             parser._raise("Expecting .text")
-        
+
         while True:
             line = parser.next_interesting_line()
             if line is None:
@@ -49,8 +49,19 @@ class Jumbled(question.Question):
 
         # parse the text and replace {i} identifiers
         # doing this here so we can throw a parser exception with a line number if needed
+        eq_list = []
         text = self.text
         expr = r'[{]([0-9]+)[}]'
+        equation_placeholder = r'\[\blatex_eq\b\]'
+        latex_regex = [r'\$\$\$(([^$]|\\[$])+)\$\$\$', r'\$\$(([^$]|\\[$])+)\$\$', r'[$](([^$]|\\[$])+)[$](?![$])'] #tex_block, display_math, inline_math
+
+        # extract the latex bits and replace with a placeholder before doing anything to the curly brackets
+        for x in latex_regex:
+            while (m := re.search(x, text)):
+                eq_list.append(m.group())
+                text = re.sub(x, '[latex_eq]', text, 1)
+
+        # replace the {i} identifiers with tags
         while (m := re.search(expr, text)):
             i = m.group(1)
             try:
@@ -65,8 +76,12 @@ class Jumbled(question.Question):
             tag = self.next_tag()
             self.mapping[tag] = i
             text = re.sub(expr, f"[{tag}]", text, 1)
-        self.text2 = text
 
+        # put the latex bits back
+        while (m := re.search(equation_placeholder, text)):
+            text = text.replace("[latex_eq]", eq_list.pop(0), 1)
+
+        self.text2 = text
         return self
 
     def next_tag(self):
@@ -97,10 +112,3 @@ class Jumbled(question.Question):
     def display(self, fmt):
         t = Template(filename = template_filename("html_jumbled"))
         return t.render(question = self, fmt = fmt)
-
-
-        
-
-
-
-
