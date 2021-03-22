@@ -39,7 +39,7 @@ class Mcq(question.Question):
                 if correct is None:
                     correct = index
                 else:
-                    parser._raise("More than one correct answer to question starting at line " + str(startline))
+                    parser._raise("More than one correct answer to question starting at line " + str(self.startline))
                 index += 1
                 self.options.append(McqOption(arg, True))
                 self.correctid = self.options[-1].id
