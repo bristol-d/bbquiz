@@ -5,6 +5,7 @@ import pathlib
 import mistletoe
 import html
 import shutil
+import random
 
 from mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
@@ -68,6 +69,17 @@ class Renderer:
         self.html = HTMLRendererWithTex(self, preamble = package.preamble)
         # this one is for output in the HTML file
         self.html2 = HTMLRendererWithTexForHTML(self, preamble = package.preamble)
+        self.qidtags = {}
+
+    def qidtag(self):
+        """
+        Return a fresh QID tag.
+        """
+        while True:
+            id = '{id:04X}'.format(id=random.randrange(65536))
+            if id not in self.qidtags:
+                self.qidtags[id] = True
+                return id
 
     def qn(self, c):
         """
@@ -275,6 +287,8 @@ class Renderer:
 
         In step 1, if the whole thing is a single paragraph, then we do not want to wrap it
         in p tags.
+
+        If we are doing QID tags, then we add one at the end.
         """
         if text == '': return text
         ast = mistletoe.Document(text)
@@ -284,6 +298,11 @@ class Renderer:
         ht = self.html.render(ast)
         escaped = html.escape(ht, quote = False)
         if escaped[-1] == '\n':
-            return escaped[:-1]
-        else:
-            return escaped
+            escaped = escaped[:-1]
+        
+        # QID tags
+        if 'qidtags' in self.package.config:
+            tag = self.qidtag()
+            escaped = html.escape(f'<div style="display: none">QID-{tag}</div>\n\n') + escaped
+        
+        return escaped
