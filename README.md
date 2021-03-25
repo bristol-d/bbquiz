@@ -100,6 +100,7 @@ After `.filename`, which must be the first command, but before starting the firs
     If you do not use the preamble command, then by default `amsfonts` and `amsmath` are included; if you do set a preamble and want to continue to use these two packages then you need to declare them in your preamble again.
   * `.config KEY=VALUE` sets a global configuration option. Currently the following are supported:
     - `qn_width` (integer value): Zero-pad question numbers, for example with `qn_width=2` the questions are numbered Q01, Q02 etc. instead of Q1, Q2 etc. This is useful because when you import questions into blackboard, it displays question "numbers" (which are really strings) in lexicographic order.
+    - `qidtags`: setting this to `true` creates a random ID for each question and inserts it as an invisible `<div>` at the start of the question; although it is invisible to students, it does appear when you download the CSV results of the exam so you can use it to get an accurate list of who answered which questions, if you are using random blocks.
 
 ## Question configuration
 
