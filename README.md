@@ -330,3 +330,22 @@ You need to respect the following python rules for this to work.
   * All the rules for [f-strings](https://www.python.org/dev/peps/pep-0498/) apply to the question block, e.g. `{x}` interpolates the value of the local variable `x`, if you want an opening or a closing curly brace then you need to double it (e.g. to make a group in a TeX string).
   * Since the f-string is triple-double-quoted, you should not use triple double quotes in the question block.
   * You should not write anything to standard output in the code block unless you want it to appear in the text that is parsed to create the question. If you want to however, you can leave the question text empty by putting the separator twice in a row on successive lines, and use print statements in your code block to generate the question yourself.
+
+The number of the current run (starting at 0, going up to N-1 inclusive) is passed to your script as a command-line parameter. This lets you do the following for example, to generate versions of a question from an array:
+
+    .template 3 ENDTEMPLATE
+        import sys
+        animals = [
+          ("mouse", "mice"),
+          ("sheep", "sheep"),
+          ("goose", "geese")
+        ]
+        index = sys.argv[1]
+        singular, plural = animals[int(index)]
+    ENDTEMPLATE
+        .question blanks
+        .text What is the plural of {singular}? {{}}
+        .answer {plural}
+    ENDTEMPLATE
+
+Note that `{{}}` in an f-string becomes `{}` in the question itself, which is what the "blanks" type question needs as a placeholder.
