@@ -79,7 +79,7 @@ A package contains pools, and pools contain questions. You start a new pool with
     
 The argument to a `.question` command is the question type. If you give a question with no type, then `mcq` is assumed.
 
-Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
+Parsing of a question ends when another `.question`, `.template` or `.pool` is encountered, or at the end of the file.
 
 Just after a `.pool` but before the first `.question` in the pool, you may include an `.instructions` command. Its argument is text (including markdown, HTML and TeX) that is displayed to students at the top of the exam page, above the questions, under the heading _Instructions:_. You could use this, for example, for information like this if appropriate:
 
@@ -294,3 +294,39 @@ TeX is by default compiled as follows:
 The code you write in the `$ ... $` tag is inserted in the _your text here_ line, with the appropriate delimiters (single `$` becomes `$`, double `$` becomes `\begin{align*}...\end{align*}`, triple `$` produces no extra delimiters at all). If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
 
 The TeX cache maintained by this program stores images based on the hash of the entire document sent to TeX, so you can edit your preamble as you like and you do not have to worry about an old version of a cached file being included by accident.
+
+## Templates
+
+Sometimes, it is useful to generate questions from a template, e.g. to make different versions of the same question with different numbers. We support this through the following syntax:
+
+    .template N SEPARATOR
+        code
+    SEPARATOR
+        text
+    SEPARATOR
+
+For example,
+
+    .template 3 ENDTEMPLATE
+        import random
+        a = random.randint(10, 20)
+        b = random.randint(10, 20)
+    ENDTEMPLATE
+        .question numeric
+        .text What is {a} + {b}?
+        .answer {a + b}
+    ENDTEMPLATE
+
+The templating system works as follows.
+
+  1. Everything up to the first line containing the separator (and nothing else) is parsed and written into a temporary python file. If the first line of code is indented with spaces, then this number of leading spaces is stripped from all lines in the block.
+  2. The same for everything up to the second instance of the separator, with the same rule for indentation. This is then appended to the temporary file as an f-string, e.g. `print(f"""...""")`.
+  3. The temporary file is executed N times (as a subprocess, so it cannot interact with the parser directly), and its standard output is parsed as if it were part of the source file.
+
+Template questions, together with random blocks in blackboard, can thus be used to create questions of the same style but with different numbers for different students. This randomisation happens at the bbquiz level - to blackboard, the result is N independent questions. Blackboard's own features for question randomisation are not used here.
+
+You need to respect the following python rules for this to work.
+
+  * All the rules for [f-strings](https://www.python.org/dev/peps/pep-0498/) apply to the question block, e.g. `{x}` interpolates the value of the local variable `x`, if you want an opening or a closing curly brace then you need to double it (e.g. to make a group in a TeX string).
+  * Since the f-string is triple-double-quoted, you should not use triple double quotes in the question block.
+  * You should not write anything to standard output in the code block unless you want it to appear in the text that is parsed to create the question. If you want to however, you can leave the question text empty by putting the separator twice in a row on successive lines, and use print statements in your code block to generate the question yourself.
