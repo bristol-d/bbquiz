@@ -180,6 +180,8 @@ class Parser:
                     break
                 if line.startswith(' ' * indent):
                     line = line[indent:]
+                elif line == "":
+                    pass
                 else:
                     self._raise("Inconsistent indentation in template block.")
                 lines.append(line)
