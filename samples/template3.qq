@@ -1,0 +1,16 @@
+.filename template3
+.pool template command line parameters
+.template 3 ENDTEMPLATE
+    import sys
+    animals = [
+        ("mouse", "mice"),
+        ("sheep", "sheep"),
+        ("goose", "geese")
+    ]
+    index = sys.argv[1]
+    singular, plural = animals[int(index)]
+ENDTEMPLATE
+    .question blanks
+    .text What is the plural of {singular}? {{}}
+    .answer {plural}
+ENDTEMPLATE

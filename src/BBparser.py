@@ -203,8 +203,8 @@ class Parser:
                 file.write("\n".join(textlines))
                 file.write('""")\n')
 
-        for _ in range(count):
-            r = subprocess.run(["python", "TEMPLATEQUESTION.py"], capture_output=True, text=True)
+        for i in range(count):
+            r = subprocess.run(["python", "TEMPLATEQUESTION.py", str(i)], capture_output=True, text=True)
             if r.returncode != 0:
                 self._raise("Executing template did not succeed. The code has been left in a file TEMPLATEQUESTION.py for you to debug, " +
                             "when you are done, delete this file and try again.")
