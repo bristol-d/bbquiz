@@ -7,17 +7,17 @@ ${fmt(question.text2)}
 %endfor
 </ol>
 </div>
-<p class="solution">
-The correct answer mapping is
+<div class="solution">
+<p>The correct answer mapping is</p>
 <ul>
 % for tag in question.mapping:
   <li>${tag} = ${question.mapping[tag]}</li>
 % endfor
 </ul>
 % if question.partial == 'true':
-Partial marks are enabled for this question.
+<p>Partial marks are enabled for this question.</p>
 % else:
-There are no partial marks for this question.
+<p>There are no partial marks for this question.</p>
 % endif
-</p>
+</div>
 <div class="note">${question.note}</div>
