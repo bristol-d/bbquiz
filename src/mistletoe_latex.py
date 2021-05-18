@@ -19,7 +19,7 @@ class DisplayMath(SpanToken):
     parse_group = 1
 
 class TexBlock(SpanToken):
-    pattern = re.compile(r"\$\$\$(([^$]|\\[$])+)\$\$\$")
+    pattern = re.compile(r"\$\$\$(([^$]|\\[$]|[$][^$]|[$][$][^$])+)\$\$\$")
     parse_inner = False
     parse_group = 1
 
