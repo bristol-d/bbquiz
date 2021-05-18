@@ -4,7 +4,7 @@
         <title>Package ${package.name}</title>
     </head>
     <body>
-        <h1 class="doc">Package ${package.name}</h1>
+        <h1 class="doc">Package ${package.name} (${len(package.pools)} pools)</h1>
         ${htmlcontent}
         % for pool in package.pools:
             <h2 class="doc">Pool ${pool.name} (${len(pool.questions)} questions)</h2>
