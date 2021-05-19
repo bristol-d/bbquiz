@@ -23,6 +23,16 @@ class TexBlock(SpanToken):
     parse_inner = False
     parse_group = 1
 
+def alt_text(t):
+    # alt text. heuristic: if it's only one line, it can go in
+    if '\n' in t:
+        alt = "tex formula"
+    else:
+        alt = html.escape(t, quote = True)
+        alt = alt.replace('{', '&#123;')
+        alt = alt.replace('}', '&#125;')
+    return alt
+
 class HTMLRendererWithTex(HTMLRenderer):
 
     def __init__(self, renderer, preamble = None):
@@ -33,11 +43,19 @@ class HTMLRendererWithTex(HTMLRenderer):
 
     def render_inline_math(self, token):
         hash = self.tex.render(token.content)
-        # alt text. heuristic: if it's only one line, it can go in
-        if '\n' in token.content:
-            alt = "tex formula"
-        else:
-            alt = html.escape(token.content, quote = True)
+        alt = alt_text(token.content)
+        resdata = self.renderer.render_resource(hash)
+        return self.template.render(resdata = resdata, alt = alt)
+
+    def render_display_math(self, token):
+        hash = self.tex.render(token.content, displaymath = True)
+        alt = alt_text(token.content)
+        resdata = self.renderer.render_resource(hash)
+        return self.template.render(resdata = resdata, alt = alt)
+
+    def render_tex_block(self, token):
+        hash = self.tex.render(token.content, texblock = True)
+        alt = alt_text(token.content)
         resdata = self.renderer.render_resource(hash)
         return self.template.render(resdata = resdata, alt = alt)
 
@@ -99,10 +117,21 @@ class HTMLRendererWithTexForHTML(HTMLRenderer):
 
     def render_inline_math(self, token):
         hash = self.tex.render(token.content)
-        if '\n' in token.content:
-            alt = "tex formula"
-        else:
-            alt = html.escape(token.content, quote = True)
+        alt = alt_text(token.content)
+        resdata = self.renderer.render_resource(hash)
+        localfolder = self.renderer.package.name + "_files"
+        return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
+
+    def render_display_math(self, token):
+        hash = self.tex.render(token.content, displaymath = True)
+        alt = alt_text(token.content)
+        resdata = self.renderer.render_resource(hash)
+        localfolder = self.renderer.package.name + "_files"
+        return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
+
+    def render_tex_block(self, token):
+        hash = self.tex.render(token.content, texblock = True)
+        alt = alt_text(token.content)
         resdata = self.renderer.render_resource(hash)
         localfolder = self.renderer.package.name + "_files"
         return self.template.render(resdata = resdata, alt = alt, localfolder = localfolder)
