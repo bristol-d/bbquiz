@@ -1,6 +1,6 @@
 <h3 class="doc">Jumbled sentence question (${question.config['points']} points)</h3>
 <div class="stem">
-${fmt(question.text2)}
+${fmt(question.rendered)}
 <ol>
 %for option in question.options:
     <li>${fmt(option.text)}</li>
