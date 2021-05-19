@@ -47,26 +47,6 @@ class Jumbled(question.Question):
             else:
                 parser._raise(f"Illegal value for 'partial', use 'true' or 'false' (question starting at line {self.startline})")
 
-        # parse the text and replace {i} identifiers
-        # doing this here so we can throw a parser exception with a line number if needed
-        text = self.text
-        expr = r'[{]([0-9]+)[}]'
-        while (m := re.search(expr, text)):
-            i = m.group(1)
-            try:
-                i = int(i)
-                if i <= 0 or i > len(self.options): raise ValueError()
-            except ValueError:
-                parser._raise(
-                    f"In jumbled text question starting at line {self.startline}: " +
-                    "Invalid format specifier in question text: must be " +
-                    "{i} where i is an integer between 1 and the number of options."
-                )
-            tag = self.next_tag()
-            self.mapping[tag] = i
-            text = re.sub(expr, f"[{tag}]", text, 1)
-        self.text2 = text
-
         return self
 
     def next_tag(self):
@@ -87,7 +67,26 @@ class Jumbled(question.Question):
 
     def render(self, qn, idgen, renderer):
         template = Template(filename = template_filename("jumbled"))
-        self.rendered = renderer.render_text(self.text2)
+        text = renderer.render_text(self.text)
+
+        expr = r'[{]([0-9]+)[}]'
+        while (m := re.search(expr, text)):
+            ii = m.group(1)
+            i = int(ii)
+            if i <= 0 or i > len(self.options): 
+                raise Exception(
+                    f"In jumbled text question starting at line {self.startline}: " +
+                    "Invalid format specifier in question text: must be " +
+                    "{i} where i is an integer between 1 and the number of options. " +
+                    f"I got: '{ii}' (parsed as integer: {i})" +
+                    f"Text is: \n{text}\n"
+                )
+            tag = self.next_tag()
+            self.mapping[tag] = i
+            text = re.sub(expr, f"[{tag}]", text, 1)
+
+        self.rendered = text
+
         return template.render(
             question = self,
             id = idgen(),
