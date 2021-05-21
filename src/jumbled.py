@@ -3,6 +3,7 @@ import uuid
 from renderer import template_filename
 import question
 import re
+import html
 
 class JumbledOption:
     def __init__(self, text):
@@ -94,6 +95,7 @@ class Jumbled(question.Question):
         )
 
     def display(self, fmt):
+        self.html = html.unescape(self.rendered)
         t = Template(filename = template_filename("html_jumbled"))
         return t.render(question = self, fmt = fmt)
 
