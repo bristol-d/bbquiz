@@ -15,12 +15,13 @@ class Jumbled(question.Question):
     self.options holds a list of (text, hex) options.
     self.mapping holds a map tag => index
     """
-    def __init__(self):
-        super().__init__(confopts = {'partial': 'false'})
+    def __init__(self, confopts = {'partial': 'false'}):
+        super().__init__(confopts)
         self.options = []
         self.partial = 'false'
         self.counter = 0
         self.mapping = {}
+        self.subtype = "jumbled sentence"
         
     def parse2(self, parser, command, arg):
         if command == 'text':
@@ -76,7 +77,7 @@ class Jumbled(question.Question):
             i = int(ii)
             if i <= 0 or i > len(self.options): 
                 raise Exception(
-                    f"In jumbled text question starting at line {self.startline}: " +
+                    f"In {self.subtype} text question starting at line {self.startline}: " +
                     "Invalid format specifier in question text: must be " +
                     "{i} where i is an integer between 1 and the number of options. " +
                     f"I got: '{ii}' (parsed as integer: {i})" +
@@ -94,10 +95,10 @@ class Jumbled(question.Question):
             title = qn
         )
 
-    def display(self, fmt):
+    def display(self, fmt, subtype = "Jumbled sentence"):
         self.html = html.unescape(self.rendered)
         t = Template(filename = template_filename("html_jumbled"))
-        return t.render(question = self, fmt = fmt)
+        return t.render(question = self, fmt = fmt, subtype = subtype)
 
 
         

@@ -1,0 +1,21 @@
+# Multiple answer dropdown question
+
+.filename maq2
+
+.pool Multiple answer
+
+.question multi
+    .text <<END
+Mark the following as true or false:
+  - Roses are red. {1}
+  - Apples are blue. {2}
+END
+
+.question multi
+    .config display=yes
+    .text <<END
+Select yes or no for the following:
+  - Cheddar is produced in France. {2}
+  - Cheddar is a type of cheese. {1}
+END
+
