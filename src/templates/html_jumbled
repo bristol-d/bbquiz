@@ -2,7 +2,7 @@
 <div class="stem">
 ${fmt(question.html)}
 <ol>
-% if subtype == "jumbled sentence":
+% if subtype == "Jumbled sentence":
 %for option in question.options:
     <li>${fmt(option.text)}</li>
 %endfor
