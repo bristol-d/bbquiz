@@ -44,3 +44,6 @@ class MultipleAnswerDropdown(jumbled.Jumbled):
             parser._raise(f"Illegal value for 'display' (question starting at line {self.startline})")
 
         return self
+
+    def textfor(self, num):
+        return self.options[num-1].text

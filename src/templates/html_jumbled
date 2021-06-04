@@ -2,17 +2,25 @@
 <div class="stem">
 ${fmt(question.html)}
 <ol>
+% if subtype == "jumbled sentence":
 %for option in question.options:
     <li>${fmt(option.text)}</li>
 %endfor
+% endif
 </ol>
 </div>
 <div class="solution">
 <p>The correct answer mapping is</p>
 <ul>
+% if subtype == "jumbled sentence":
 % for tag in question.mapping:
   <li>${tag} = ${question.mapping[tag]}</li>
 % endfor
+% else:
+% for tag in question.mapping:
+  <li>${tag} = ${question.textfor(question.mapping[tag])}</li>
+% endfor
+% endif
 </ul>
 % if question.partial == 'true':
 <p>Partial marks are enabled for this question.</p>
