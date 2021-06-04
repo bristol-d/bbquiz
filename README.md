@@ -139,6 +139,24 @@ A multiple answer question is syntactically exactly like a multiple choice quest
 
 It should be possible to implement more complex scoring rules as blackboard's internal XML format uses tags with arbitrary and/or/not combinations, but this is not implemented in this tool yet.
 
+### Multiple answer with dropdown (multi)
+
+This is a shorthand for implementing a multiple answer question using blackboard's "jumbled sentence" question type, where students have to pick an answer for each subquestion using a dropdown with values such as true/false. It allows for proper partial marking.
+
+    .question multi
+    .text <<END
+    Mark the following as True or False:
+      - Cheddar is produced in France. {2}
+      - Cheddar is a type of cheese. {1}
+    END
+
+Insert a `{1}` resp. `{2}` where you want a dropdown box to appear, and use 1 for true/correct/yes and 2 for false/incorrect/no.
+
+By default, the options in each box are `True` and `False`, but you can use the option
+`.config display=KEYWORD` to change the values. Allowed values for the keyword are `True`, `Yes` and `Correct`, and the same values with the first letter not capitalised if you prefer that. The corresponding keyword for the negative option is then chosen accordingly.
+
+In blackboard itself, these questions will show up as "jumbled sentence" rather than "multiple answer".
+
 ### Short answer
 
 ```
