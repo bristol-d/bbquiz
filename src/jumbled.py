@@ -99,10 +99,3 @@ class Jumbled(question.Question):
         self.html = html.unescape(self.rendered)
         t = Template(filename = template_filename("html_jumbled"))
         return t.render(question = self, fmt = fmt, subtype = subtype)
-
-
-        
-
-
-
-

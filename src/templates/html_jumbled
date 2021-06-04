@@ -12,7 +12,7 @@ ${fmt(question.html)}
 <div class="solution">
 <p>The correct answer mapping is</p>
 <ul>
-% if subtype == "jumbled sentence":
+% if subtype == "Jumbled sentence":
 % for tag in question.mapping:
   <li>${tag} = ${question.mapping[tag]}</li>
 % endfor
