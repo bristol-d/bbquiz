@@ -51,27 +51,38 @@ class Jumbled(question.Question):
 
         return self
 
-    def next_tag(self):
+    def tagger(self):
         """
-        Get the next tag in the sequence a, b, ..., z, aa, ab, ... zz
+        Return a closure that, on each call, gets the next tag in the sequence
+        a, b, ..., z, aa, ab, ... zz
+
+        Calling with parameter 'True' returns the current counter value.
         """
-        alphabet = "abcdefghijklmnopqrstuvwxyz"
-        l = len(alphabet)
-        c = self.counter
-        r = c % l
-        q = int((c-r)/l)
-        if q == 0:
-            tag = alphabet[r:r+1]
-        else:
-            tag = alphabet[q-1:q] + alphabet[r:r+1]
-        self.counter += 1
-        return tag
+        c = 0
+        def closure(peek = None):
+            nonlocal c
+            if peek: return c
+            alphabet = "abcdefghijklmnopqrstuvwxyz"
+            l = len(alphabet)
+            r = c % l
+            q = int((c-r)/l)
+            if q == 0:
+                tag = alphabet[r:r+1]
+            else:
+                tag = alphabet[q-1:q] + alphabet[r:r+1]
+            c += 1
+            return tag
+        return closure
 
-    def render(self, qn, idgen, renderer):
-        template = Template(filename = template_filename("jumbled"))
-        text = renderer.render_text(self.text)
-
+    def replace(self, text):
+        """
+        Replace {i} placeholders with [a], [b], ...
+        Return the replaced text and the number of tags found.
+        """
         expr = r'[{]([0-9]+)[}]'
+        counter = 0
+        mapping = {}
+        tags = self.tagger()
         while (m := re.search(expr, text)):
             ii = m.group(1)
             i = int(ii)
@@ -79,16 +90,20 @@ class Jumbled(question.Question):
                 raise Exception(
                     f"In {self.subtype} text question starting at line {self.startline}: " +
                     "Invalid format specifier in question text: must be " +
-                    "{i} where i is an integer between 1 and the number of options. " +
+                    f"{i} where i is an integer between 1 and the number of options. " +
                     f"I got: '{ii}' (parsed as integer: {i})" +
                     f"Text is: \n{text}\n"
                 )
-            tag = self.next_tag()
+            tag = tags()
             self.mapping[tag] = i
             text = re.sub(expr, f"[{tag}]", text, 1)
+        return text, tags(True)
 
-        self.rendered = text
 
+    def render(self, qn, idgen, renderer):
+        template = Template(filename = template_filename("jumbled"))
+        text = renderer.render_text(self.text)
+        self.rendered, self.counter = self.replace(text)
         return template.render(
             question = self,
             id = idgen(),
@@ -96,6 +111,9 @@ class Jumbled(question.Question):
         )
 
     def display(self, fmt, subtype = "Jumbled sentence"):
-        self.html = html.unescape(self.rendered)
         t = Template(filename = template_filename("html_jumbled"))
+        text = fmt(self.text)
+        text, c2 = self.replace(text)
+        assert c2 == self.counter, "Tag mismatch between HTML and BB versions."
+        self.htmltext = text      
         return t.render(question = self, fmt = fmt, subtype = subtype)
