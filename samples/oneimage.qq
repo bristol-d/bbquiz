@@ -1,5 +1,4 @@
 .filename oneimage
-.config keep_imagenames = true
 .pool question with one image
 .question mcq
     .text <<END
