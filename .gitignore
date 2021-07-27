@@ -4,3 +4,4 @@ samples/out
 samples/*.html
 samples/*_files
 tmp/
+.DS_Store

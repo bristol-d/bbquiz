@@ -23,7 +23,7 @@ Unlike the toastedcrumpets version, this program does not need the sympy/numpy p
 
 ## Usage
 
-This project reads a source file in a text-based format and produces a ZIP file of questions that can be uploaded to blackboard. To run it, run 
+This project reads a source file in a text-based format and produces a ZIP file of questions that can be uploaded to blackboard. To run it, run
 
     python src/main.py SOURCEFILE
 
@@ -41,14 +41,14 @@ Source files are in a text-based format. Each line must be exactly one of:
 Command lines are in the format `.COMMAND [ARGUMENT]`, where the optional argument either runs until the end of line, for example
 
     .text What is the capital of Switzerland?
-    
+
 or you can use a here-document to have an argument that spans multiple lines:
 
     .text <<END
     Consider the following cities:
       1. Zurich
       2. Bern
-      3. Basel 
+      3. Basel
     END
 
 The starting indicator for a here-document is `<<` followed by a word following variable-naming conventions, with no space before the word and no further text on the same line. A here-document ends on a line containing the same word and nothing else except whitespace (so you can indent the end marker). You can reuse the same word for multiple here-documents in the same file, for example use `END` for all of them except of course if you want the string END inside one of your questions.
@@ -76,7 +76,7 @@ A package contains pools, and pools contain questions. You start a new pool with
       .question mcq
         # real question 1 details
         # ...
-    
+
 The argument to a `.question` command is the question type. If you give a question with no type, then `mcq` is assumed.
 
 Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
@@ -101,6 +101,7 @@ After `.filename`, which must be the first command, but before starting the firs
   * `.config KEY=VALUE` sets a global configuration option. Currently the following are supported:
     - `qn_width` (integer value): Zero-pad question numbers, for example with `qn_width=2` the questions are numbered Q01, Q02 etc. instead of Q1, Q2 etc. This is useful because when you import questions into blackboard, it displays question "numbers" (which are really strings) in lexicographic order.
     - `qidtags`: setting this to `true` creates a random ID for each question and inserts it as an invisible `<div>` at the start of the question; although it is invisible to students, it does appear when you download the CSV results of the exam so you can use it to get an accurate list of who answered which questions, if you are using random blocks.
+    - `keep_imagenames`: setting this to `true` maintains the filenames of the PNG files added to the compiled ZIP package. Setting this to `false` (or omitting this configuration command) results in obfuscated image filenames in the final exam - useful if the source filenames give a clue to the correct answer for a question !
 
 ## Question configuration
 

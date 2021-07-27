@@ -55,8 +55,8 @@ class Tex:
                 stderr = subprocess.STDOUT,
                 creationflags = creation_flag
             )
-        except subprocess.CalledProcessError:
-            raise Exception(f"Failed to run subprocess {cmdlist[0]}. Check that it is on the PATH.")
+        except subprocess.CalledProcessError as e:
+            raise Exception(f"Failed to run subprocess {cmdlist[0]}. Check that it is on the PATH. {e.output} ")
 
     def run(self, source, hash, prepost = True):
         filename = hash + ".tex"

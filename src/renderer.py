@@ -6,6 +6,7 @@ import mistletoe
 import html
 import shutil
 import random
+import time
 
 from mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
@@ -149,16 +150,16 @@ class Renderer:
         self.z.writestr(reslist[-1].id + ".dat", pkg_template.render(name=self.package.name))
 
     def _render_pool(self, counter, pool):
-        questions = [ 
-            RenderedQuestion(q.render(self.qn(c+1), self.bbid, self)) 
-            for (c, q) in enumerate(pool.questions) 
+        questions = [
+            RenderedQuestion(q.render(self.qn(c+1), self.bbid, self))
+            for (c, q) in enumerate(pool.questions)
         ]
         template = Template(filename = template_filename("pool"))
         data = template.render(p=PoolResource(
-            name = pool.name, 
-            id = self.bbid(), 
-            sid = self.bbid(), 
-            qs = questions, 
+            name = pool.name,
+            id = self.bbid(),
+            sid = self.bbid(),
+            qs = questions,
             instructions = self.render_text(pool.instructions)
         ))
         datid = Resource(counter + 1, None, None).id
@@ -245,7 +246,13 @@ class Renderer:
         template = Template(filename = template_filename("resource_image"))
         # the resource id has to go before the extension
         suffix = filepath.suffix
-        basename = filepath.name[:-len(suffix)]
+
+        # Check configuration options to see if user wants to maintain PNG image filenames (default is to obfuscate them)
+        if ('keep_imagenames' in self.package.config) and ('true' in self.package.config['keep_imagenames']):
+            basename = filepath.name[:-len(suffix)]
+        else:
+            basename = str(round(time.time() * 1000))
+
         resname = f"{basename}__xid-{rid}_1{suffix}"
 
         # the xml file
@@ -299,10 +306,10 @@ class Renderer:
         escaped = html.escape(ht, quote = False)
         if escaped[-1] == '\n':
             escaped = escaped[:-1]
-        
+
         # QID tags
         if 'qidtags' in self.package.config:
             tag = self.qidtag()
             escaped = html.escape(f'<div style="display: none">QID-{tag}</div>\n\n') + escaped
-        
+
         return escaped
