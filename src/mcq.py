@@ -60,8 +60,8 @@ class Mcq(question.Question):
         """
         Render a question 'in house'.
         """
-        if 'random_order' in self.confopts:
-            ro = self.confopts['random_order']
+        if 'random_order' in self.config:
+            ro = self.config['random_order']
             if ro == "yes" or ro == "Yes":
                 ro = "Yes"
             elif ro == "no" or ro == "No":
