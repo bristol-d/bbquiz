@@ -1,0 +1,12 @@
+.filename template
+.pool Template Questions
+
+.template 2 END
+    x = 42
+END
+    .question mcq
+    .text What is the answer to life, the universe and everything?
+    .option {x-1}
+    .answer {x}
+    .option {x+1}
+END

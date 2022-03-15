@@ -1,6 +1,9 @@
 import BBtypes as types
 import questions
 import re
+import os
+import io
+import subprocess
 
 class Parser:
     def __init__(self, file):
@@ -94,7 +97,8 @@ class Parser:
             if line is None: return self.package
             command, arg = self.parse_command(line)
             if command == 'pool':
-                pool = self.parse_pool(arg)
+                pool = types.Pool(arg)
+                self.parse_pool(pool)
                 self.package.pools.append(pool)
             elif command == 'filename':
                 if self.has_name is not None:
@@ -117,23 +121,99 @@ class Parser:
             else:
                 self._raise("Expected a pool or filename command.")
 
-    def parse_pool(self, name):
-        pool = types.Pool(name)
+    def parse_pool(self, pool):
         while True:
             line = self.next_interesting_line()
-            if line is None: return pool
+            if line is None: return
             command, arg = self.parse_command(line)
             if command == 'question':
                 self.parse_question(pool, arg)
             elif command == 'instructions':
                 pool.instructions = arg
+            elif command == 'template':
+                self.parse_template(pool, arg)
             elif command == 'pool':
                 # put this back rather than recurse, it's cleaner
                 # and python isn't guaranteed to do tail recursion
                 self.putback = line
-                return pool
+                return
             else:
                 self._raise("Expecting pool or question")
+
+    def parse_template(self, pool, args):
+        """
+        Syntax is:
+            .template N SEPARATOR
+                code
+            SEPARATOR
+                question
+            SEPARATOR
+            If the first line of code and/or question is indented, then this amount of indent will be removed from all lines in the block.
+        """
+        match = re.match("(\d+) +([A-Za-z0-9_]+)", args)
+        if match is None:
+            self._raise("Invalid template, syntax is '.template N SEPARATOR'")
+        count = int(match.group(1))
+        if count <= 0:
+            self._raise("Count for a template question must be > 0.")
+        separator = match.group(2)
+
+        def read_block(separator):
+            lines = []
+            first = self.nextline().rstrip("\n")
+            if first is None:
+                self._raise("End of file immediately after template line.")
+            if first == separator:
+                return lines
+            if first.startswith(" "):
+                match = re.match("^( +)", first)
+                indent = len(match.group(1))
+            else:
+                indent = 0
+            lines.append(first[indent:])
+            while True:
+                line = self.nextline()
+                if line is None:
+                    self._raise("End of file in template section.")
+                line = line.rstrip('\n')
+                if line == separator:
+                    break
+                if line.startswith(' ' * indent):
+                    line = line[indent:]
+                elif line == "":
+                    pass
+                else:
+                    self._raise("Inconsistent indentation in template block.")
+                lines.append(line)
+            return lines
+
+        codelines = read_block(separator)
+        if len(codelines) == 0:
+            self._raise("Empty code block in template")
+        textstart = self.N
+        textlines = read_block(separator)
+
+        if os.path.exists("TEMPLATEQUESTION.py"):
+            raise Exception("File TEMPLATEQUESTION.py exists, please delete and try again.")
+        with open("TEMPLATEQUESTION.py", "w") as file:
+            file.write("\n".join(codelines))
+            file.write("\n")
+            if len(textlines) > 0:
+                file.write('print(f"""')
+                file.write("\n".join(textlines))
+                file.write('""")\n')
+
+        for i in range(count):
+            r = subprocess.run(["python", "TEMPLATEQUESTION.py", str(i)], capture_output=True, text=True)
+            if r.returncode != 0:
+                self._raise("Executing template did not succeed. The code has been left in a file TEMPLATEQUESTION.py for you to debug, " +
+                            "when you are done, delete this file and try again.")
+            equestion = r.stdout
+            sub_parser = Parser(io.StringIO(equestion))
+            sub_parser.N = textstart
+            sub_parser.parse_pool(pool)
+
+        os.remove("TEMPLATEQUESTION.py")
 
     def parse_question(self, pool, type):
         """

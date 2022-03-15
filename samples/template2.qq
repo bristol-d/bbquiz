@@ -1,0 +1,11 @@
+.filename template2
+.pool templating example 2
+.template 5 ENDTEMPLATE
+    import random
+    a = random.randint(10, 20)
+    b = random.randint(10, 20)
+ENDTEMPLATE
+    .question numeric
+    .text What is {a} + {b}?
+    .answer {a + b}
+ENDTEMPLATE

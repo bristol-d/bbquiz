@@ -2,12 +2,12 @@
 <div class="stem">
 ${fmt(question.text)}
 </div>
-<p class="solution">
-The correct answers are
+<div class="solution">
+<p>The correct answers are</p>
 <ol>
 % for b in question.blanks:
   <li>${b}</li>
 % endfor
 </ol>
-</p>
+</div>
 <div class="note">${question.note}</div>

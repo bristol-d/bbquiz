@@ -79,7 +79,7 @@ A package contains pools, and pools contain questions. You start a new pool with
 
 The argument to a `.question` command is the question type. If you give a question with no type, then `mcq` is assumed.
 
-Parsing of a question ends when another `.question` or `.pool` is encountered, or at the end of the file.
+Parsing of a question ends when another `.question`, `.template` or `.pool` is encountered, or at the end of the file.
 
 Just after a `.pool` but before the first `.question` in the pool, you may include an `.instructions` command. Its argument is text (including markdown, HTML and TeX) that is displayed to students at the top of the exam page, above the questions, under the heading _Instructions:_. You could use this, for example, for information like this if appropriate:
 
@@ -139,6 +139,24 @@ You can use markdown and Tex in both the text and the option/answer commands' ar
 A multiple answer question is syntactically exactly like a multiple choice question, except that there can be any number of correct answers including zero. Students must select all that apply and blackboard's automarker will give full marks if all choices are correct (the student has selected all of the correct options and none of the incorrect ones) and no marks otherwise.
 
 It should be possible to implement more complex scoring rules as blackboard's internal XML format uses tags with arbitrary and/or/not combinations, but this is not implemented in this tool yet.
+
+### Multiple answer with dropdown (multi)
+
+This is a shorthand for implementing a multiple answer question using blackboard's "jumbled sentence" question type, where students have to pick an answer for each subquestion using a dropdown with values such as true/false. It allows for proper partial marking.
+
+    .question multi
+    .text <<END
+    Mark the following as True or False:
+      - Cheddar is produced in France. {2}
+      - Cheddar is a type of cheese. {1}
+    END
+
+Insert a `{1}` resp. `{2}` where you want a dropdown box to appear, and use 1 for true/correct/yes and 2 for false/incorrect/no.
+
+By default, the options in each box are `True` and `False`, but you can use the option
+`.config display=KEYWORD` to change the values. Allowed values for the keyword are `True`, `Yes` and `Correct`, and the same values with the first letter not capitalised if you prefer that. The corresponding keyword for the negative option is then chosen accordingly.
+
+In blackboard itself, these questions will show up as "jumbled sentence" rather than "multiple answer".
 
 ### Short answer
 
@@ -295,3 +313,58 @@ TeX is by default compiled as follows:
 The code you write in the `$ ... $` tag is inserted in the _your text here_ line, with the appropriate delimiters (single `$` becomes `$`, double `$` becomes `\begin{align*}...\end{align*}`, triple `$` produces no extra delimiters at all). If you wish, before the first pool you can use the `.preamble` command to declare a custom preamble which replaces the lines from _start preamble_ to _end preamble_, for example to declare your own macros or include further packages. Note that this replaces, not extends, the default one so you have to redeclare amsmath/amsfonts in your own preamble if you want to use them.
 
 The TeX cache maintained by this program stores images based on the hash of the entire document sent to TeX, so you can edit your preamble as you like and you do not have to worry about an old version of a cached file being included by accident.
+
+## Templates
+
+Sometimes, it is useful to generate questions from a template, e.g. to make different versions of the same question with different numbers. We support this through the following syntax:
+
+    .template N SEPARATOR
+        code
+    SEPARATOR
+        text
+    SEPARATOR
+
+For example,
+
+    .template 3 ENDTEMPLATE
+        import random
+        a = random.randint(10, 20)
+        b = random.randint(10, 20)
+    ENDTEMPLATE
+        .question numeric
+        .text What is {a} + {b}?
+        .answer {a + b}
+    ENDTEMPLATE
+
+The templating system works as follows.
+
+  1. Everything up to the first line containing the separator (and nothing else) is parsed and written into a temporary python file. If the first line of code is indented with spaces, then this number of leading spaces is stripped from all lines in the block.
+  2. The same for everything up to the second instance of the separator, with the same rule for indentation. This is then appended to the temporary file as an f-string, e.g. `print(f"""...""")`.
+  3. The temporary file is executed N times (as a subprocess, so it cannot interact with the parser directly), and its standard output is parsed as if it were part of the source file.
+
+Template questions, together with random blocks in blackboard, can thus be used to create questions of the same style but with different numbers for different students. This randomisation happens at the bbquiz level - to blackboard, the result is N independent questions. Blackboard's own features for question randomisation are not used here.
+
+You need to respect the following python rules for this to work.
+
+  * All the rules for [f-strings](https://www.python.org/dev/peps/pep-0498/) apply to the question block, e.g. `{x}` interpolates the value of the local variable `x`, if you want an opening or a closing curly brace then you need to double it (e.g. to make a group in a TeX string).
+  * Since the f-string is triple-double-quoted, you should not use triple double quotes in the question block.
+  * You should not write anything to standard output in the code block unless you want it to appear in the text that is parsed to create the question. If you want to however, you can leave the question text empty by putting the separator twice in a row on successive lines, and use print statements in your code block to generate the question yourself.
+
+The number of the current run (starting at 0, going up to N-1 inclusive) is passed to your script as a command-line parameter. This lets you do the following for example, to generate versions of a question from an array:
+
+    .template 3 ENDTEMPLATE
+        import sys
+        animals = [
+          ("mouse", "mice"),
+          ("sheep", "sheep"),
+          ("goose", "geese")
+        ]
+        index = sys.argv[1]
+        singular, plural = animals[int(index)]
+    ENDTEMPLATE
+        .question blanks
+        .text What is the plural of {singular}? {{}}
+        .answer {plural}
+    ENDTEMPLATE
+
+Note that `{{}}` in an f-string becomes `{}` in the question itself, which is what the "blanks" type question needs as a placeholder.

@@ -1,23 +1,31 @@
-<h3 class="doc">Jumbled sentence question (${question.config['points']} points)</h3>
+<h3 class="doc">${subtype} question (${question.config['points']} points)</h3>
 <div class="stem">
-${fmt(question.text2)}
+${question.htmltext}
 <ol>
+% if subtype == "Jumbled sentence":
 %for option in question.options:
     <li>${fmt(option.text)}</li>
 %endfor
+% endif
 </ol>
 </div>
-<p class="solution">
-The correct answer mapping is
+<div class="solution">
+<p>The correct answer mapping is</p>
 <ul>
+% if subtype == "Jumbled sentence":
 % for tag in question.mapping:
   <li>${tag} = ${question.mapping[tag]}</li>
 % endfor
+% else:
+% for tag in question.mapping:
+  <li>${tag} = ${question.textfor(question.mapping[tag])}</li>
+% endfor
+% endif
 </ul>
 % if question.partial == 'true':
-Partial marks are enabled for this question.
+<p>Partial marks are enabled for this question.</p>
 % else:
-There are no partial marks for this question.
+<p>There are no partial marks for this question.</p>
 % endif
-</p>
+</div>
 <div class="note">${question.note}</div>

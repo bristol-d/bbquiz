@@ -81,6 +81,9 @@ class Tex:
         if texblock:
             input = self.pre + source + self._ending
         elif displaymath:
+            # bugfix: don't insert empty para if source starts with newline
+            # this lets you write the $$ on a line of its own
+            if source[0] == '\n': source = source[1:]
             input = self.pre + "\\begin{align*}\n" + source + "\\end{align*}\n" + self._ending
         else:
             input = self.pre + "$" + source + "$\n" + self._ending

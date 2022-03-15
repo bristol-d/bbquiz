@@ -51,7 +51,10 @@ class Jumbled(question.Question):
         # doing this here so we can throw a parser exception with a line number if needed
         text = self.text
         expr = r'[{]([0-9]+)[}]'
-        while (m := re.search(expr, text)):
+        while True:
+            m = re.search(expr, text)
+            if not m:
+                break
             i = m.group(1)
             try:
                 i = int(i)
@@ -97,10 +100,3 @@ class Jumbled(question.Question):
     def display(self, fmt):
         t = Template(filename = template_filename("html_jumbled"))
         return t.render(question = self, fmt = fmt)
-
-
-        
-
-
-
-
