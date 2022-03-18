@@ -71,7 +71,11 @@ class Tex:
             filename
             ], self.cwd)
         # and convert to png
-        self._run(["dvipng", hash + ".dvi", "-o", hash + ".png"], self.cwd)
+        if 'BBQUIZ_DVI' in os.environ:
+            dvi = os.environ['BBQUIZ_DVI']
+        else:
+            dvi = 'dvipng'
+        self._run([dvi, hash + ".dvi", "-o", hash + ".png"], self.cwd)
 
     def render(self, source, displaymath = False, texblock = False):
         """

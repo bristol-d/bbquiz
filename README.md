@@ -29,6 +29,8 @@ This project reads a source file in a text-based format and produces a ZIP file 
 
 This creates both a ZIP file, which you can upload to blackboard, and a HTML file with an overview of your questions. The names of the output files are taken from the `.filename` command in your source file, which also functions as the blackboard package name.
 
+_BBquiz uses `dvipng` to convert TeX sources to images. On some Win10 platforms (including my work computer since recently) dvipng hangs with what seems to be the issue mentioned in this bug report: https://github.com/sympy/sympy/issues/18155. In this case, you can set the environment variable `BBQUIZ_DVI` to point at another program to run in place of dvipng, for example a batch file that calls the real dvipng with the `-d -v` options enabled which seems to work around the bug._
+
 ## File format
 
 Source files are in a text-based format. Each line must be exactly one of:
