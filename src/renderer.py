@@ -124,11 +124,17 @@ class Renderer:
         """
         template = Template(filename = template_filename("html"))
         with open(self.package.name + ".html", "w") as file:
-            file.write(template.render(
-                package = self.package,
-                fmt = self.render_text_html,
-                htmlcontent = self.render_text_html(self.package.htmlcontent)
-            ))
+            try:
+                file.write(template.render(
+                    package = self.package,
+                    fmt = self.render_text_html,
+                    htmlcontent = self.render_text_html(self.package.htmlcontent)
+                ))
+            except NameError:
+                print("Error writing template.")
+                print(f"filename={template_filename('html')}")
+                print("content=\n" + self.package.htmlcontent)
+                assert False, "Debug"
 
     def _render_metadata(self):
         """
