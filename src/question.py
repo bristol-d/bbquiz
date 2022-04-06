@@ -2,13 +2,13 @@ import re
 
 def validate_points(key, value, err):
     """
-    Check that points is an integer > 0.
+    Check that points is an integer >= 0.
     """
     try:
         v = int(value)
     except:
         err(f"Option {key} expects an integer value, but cannot convert '{value}' to an integer.")
-    if v > 0:
+    if v >= 0:
         return v
     else:
         err(f"The value for {key} must be a positive integer.")
