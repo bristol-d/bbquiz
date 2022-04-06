@@ -14,8 +14,8 @@ class Jumbled(question.Question):
     self.options holds a list of (text, hex) options.
     self.mapping holds a map tag => index
     """
-    def __init__(self):
-        super().__init__(confopts = {'partial': 'false'})
+    def __init__(self, confopts = {'partial': 'false'}):
+        super().__init__(confopts)
         self.options = []
         self.partial = 'false'
         self.counter = 0
@@ -97,6 +97,6 @@ class Jumbled(question.Question):
             title = qn
         )
 
-    def display(self, fmt):
+    def display(self, fmt, subtype = "Jumbled sentence"):
         t = Template(filename = template_filename("html_jumbled"))
-        return t.render(question = self, fmt = fmt)
+        return t.render(question = self, fmt = fmt, subtype=subtype)
