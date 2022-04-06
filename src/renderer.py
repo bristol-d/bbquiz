@@ -316,6 +316,11 @@ class Renderer:
         if escaped[-1] == '\n':
             escaped = escaped[:-1]
 
+        # any global overrides that we have to add to each question
+        if 'question_preamble' in self.package.config:
+            preamble = self.package.config['question_preamble']
+            escaped = html.escape(preamble) + "\n" + escaped
+
         # QID tags
         if 'qidtags' in self.package.config:
             tagstyle = self.package.config['qidtags']
