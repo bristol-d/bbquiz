@@ -71,12 +71,15 @@ class Renderer:
         self.html2 = HTMLRendererWithTexForHTML(self, preamble = package.preamble)
         self.qidtags = {}
 
-    def qidtag(self):
+    def qidtag(self, long = False):
         """
         Return a fresh QID tag.
         """
         while True:
-            id = '{id:04X}'.format(id=random.randrange(65536))
+            if long:
+                id = '{id:08X}'.format(id=random.randrange(65536 * 65536))
+            else:
+                id = '{id:04X}'.format(id=random.randrange(65536))
             if id not in self.qidtags:
                 self.qidtags[id] = True
                 return id
@@ -302,7 +305,11 @@ class Renderer:
         
         # QID tags
         if 'qidtags' in self.package.config:
-            tag = self.qidtag()
+            tagstyle = self.package.config['qidtags']
+            if tagstyle == 'long':
+                tag = self.qidtag(long = True)
+            else:
+                tag = self.qidtag()
             escaped = html.escape(f'<div style="display: none">QID-{tag}</div>\n\n') + escaped
         
         return escaped
