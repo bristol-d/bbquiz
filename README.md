@@ -31,6 +31,14 @@ This creates both a ZIP file, which you can upload to blackboard, and a HTML fil
 
 _BBquiz uses `dvipng` to convert TeX sources to images. On some Win10 platforms (including my work computer since recently) dvipng hangs with what seems to be the issue mentioned in this bug report: https://github.com/sympy/sympy/issues/18155. In this case, you can set the environment variable `BBQUIZ_DVI` to point at another program to run in place of dvipng, for example a batch file that calls the real dvipng with the `-d -v` options enabled which seems to work around the bug._
 
+You can also call the tool with an extra argument
+
+    python src/main.py SOURCEFILE POOLNAME
+
+Which will only create the questions in a single pool. This is useful if you have
+edited a question in a file with many pools and only want to upload the changes
+to a single one.
+
 ## File format
 
 Source files are in a text-based format. Each line must be exactly one of:

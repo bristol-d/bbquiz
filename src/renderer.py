@@ -113,10 +113,17 @@ class Renderer:
         return str(self._resid)
 
 
-    def render(self):
-        self.z = zipfile.ZipFile(self.package.name + ".zip", mode = "w",
+    def render(self, poolname = None):
+        if poolname is not None:
+            pname = "_" + poolname
+            print("Rendering only pool " + poolname)
+        else:
+            pname = ""
+        self.z = zipfile.ZipFile(self.package.name + pname + ".zip", mode = "w",
             compression = zipfile.ZIP_STORED)
         for (counter, pool) in enumerate(self.package.pools):
+            if poolname is not None and pool.name != poolname:
+                continue
             self._render_pool(counter, pool)
         self._render_metadata()
         self._render_overview()
