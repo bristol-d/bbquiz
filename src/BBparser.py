@@ -70,7 +70,7 @@ class Parser:
         otherwise raise an exception.
         In case of a heredoc, argument reads lines from the file to consume it.
         """
-        match = re.match('[.]([a-z]+) *(<<[a-zA-Z0-9_]+)?(.*)', line)
+        match = re.match('[.]([a-z_]+) *(<<[a-zA-Z0-9_]+)?(.*)', line)
         if match is None: self._raise("Non-command line found outside of heredoc.")
         command = match.group(1)
         if match.group(2) is not None:
@@ -108,6 +108,8 @@ class Parser:
                     self.has_name = self.N
             elif command == 'html':
                 self.package.htmlcontent = arg
+            elif command == 'question_preamble':
+                self.package.question_preamble = arg
             elif command == 'config':
                 m = re.match("([a-zA-Z0-9_]+) *=(.*)", arg)
                 if m:

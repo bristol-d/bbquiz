@@ -317,8 +317,8 @@ class Renderer:
             escaped = escaped[:-1]
 
         # any global overrides that we have to add to each question
-        if 'question_preamble' in self.package.config:
-            preamble = self.package.config['question_preamble']
+        if hasattr(self.package, 'question_preamble'):
+            preamble = self.package.question_preamble
             escaped = html.escape(preamble) + "\n" + escaped
 
         # QID tags

@@ -1,0 +1,12 @@
+.filename preamble
+
+# testing the question_preamble feature
+
+.question_preamble <style></style>
+
+.pool test_preamble
+
+.question mcq
+.text Is this text in red?
+.answer yes
+.option no
