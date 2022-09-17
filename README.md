@@ -9,6 +9,16 @@ This project lets you write your blackboard quizzes in a text-based format inste
   * Embed Tex formulas in your quizzes that are rendered as PNG images.
   * Rendered images are cached across runs to speed up the common use case where you repeatedly proofread, edit and recompile your quiz.
 
+## Installation
+
+```
+$ python3 -m pip install https://github.com/bristol-d/bbquiz/archive/refs/heads/master.zip
+```
+
+Or, using `git` to fetch a full copy of the repository:
+
+- `git clone` this repository, `cd` in, and run `pip install .`.
+
 ## Dependencies
 
 This project is written in python and currently requires the following packages, besides system packages. You should be able to install all of them with `pip install PACKAGENAME`, even on Windows.

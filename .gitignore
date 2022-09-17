@@ -5,3 +5,5 @@ samples/*.html
 samples/*_files
 tmp/
 .DS_Store
+build/
+bbquiz.egg-info/

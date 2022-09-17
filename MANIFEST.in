@@ -1,0 +1,2 @@
+include src/bbquiz/templates/*.txt
+include src/bbquiz/templates/.bb-package-info.txt
