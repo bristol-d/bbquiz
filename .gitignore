@@ -7,3 +7,13 @@ tmp/
 .DS_Store
 build/
 bbquiz.egg-info/
+tmp-debug.log
+.*.swp
+__pycache__/
+*.pyc
+.mypy_cache
+.vagrant/
+env/
+*.egg-info
+.tox/
+*.lock

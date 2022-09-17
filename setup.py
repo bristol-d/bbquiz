@@ -21,7 +21,7 @@ if __name__ == '__main__':
   setup(
     version         =get_version(),
     name            ='bbquiz',
-    url             ='https://github.com/bristol-d/bbquiz',
+    url             ='https://github.com/arranstewart/bbquiz',
     description     ='Make blackboard quizzes from text+markdown',
     packages        =find_packages(where='src'),
     package_dir     ={'': 'src'},
@@ -30,6 +30,8 @@ if __name__ == '__main__':
                       'mako',
                       'Pillow',
     ),
+    author='Arran D. Stewart',
+    author_email='arran.stewart@uwa.edu.au',
     license         ='MIT',
     license_files   =('LICENCE',),
     long_description=read('README.md'),

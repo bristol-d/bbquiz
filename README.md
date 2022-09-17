@@ -1,6 +1,10 @@
 # Bristol Blackboard Quiz Maker
 
-This is a fork of [toastedcrumpets/BlackboardQuizMaker](https://github.com/toastedcrumpets/BlackboardQuizMaker). The project, like the original, is released under the MIT licence.
+Fork of <https://github.com/bristol-d/bbquiz> which is a fork of
+[toastedcrumpets/BlackboardQuizMaker][tc-bbqm]. The project, like the
+original, is released under the MIT licence.
+
+[tc-bbqm]: https://github.com/toastedcrumpets/BlackboardQuizMaker
 
 This project lets you write your blackboard quizzes in a text-based format instead of using the clunky user interface in blackboard. You can compile quiz files to ZIP packages that you can upload to blackboard, as well as create HTML overview files that you can use for example to show to your external examiner or other quality control people. The main features are:
 
@@ -12,14 +16,62 @@ This project lets you write your blackboard quizzes in a text-based format inste
 ## Installation
 
 ```
-$ python3 -m pip install https://github.com/bristol-d/bbquiz/archive/refs/heads/master.zip
+$ python3 -m pip install https://github.com/arranstewart/bbquiz/archive/refs/heads/master.zip
 ```
 
 Or, using `git` to fetch a full copy of the repository:
 
 - `git clone` this repository, `cd` in, and run `pip install .`.
 
+## Usage
+
+This project reads a source file in a text-based format and produces a ZIP file of questions that can be uploaded to blackboard. To run it, run
+
+```
+$ bbquiz SOURCEFILE
+```
+
+This creates both a ZIP file, which you can upload to blackboard, and a
+HTML file with an overview of your questions. The names of the output
+files are taken from the `.filename` command in your source file, which
+also functions as the blackboard package name.
+
+For example, create a file named `myquestions.txt` with the following
+contents:
+
+```
+.filename MyQuestions
+
+.pool Mock Exam
+
+  .question mcq
+    .text What is the capital of Switzerland?
+    .option Zurich
+    .answer Bern
+    .option Geneva
+
+.pool Real Exam
+
+  .question maq
+      .text Which of the following are in Switzerland?
+      .option Paris
+      .answer Geneva
+      .answer Lausanne
+      .option Nancy
+```
+
+Running `bbquiz ./myquestions.txt` will create:
+
+- A file `MyQuestions.html`, containing an HTML preview of your
+  questions
+- A file `MyQuestions.zip`, which can be imported into Blackboard LMS.
+
+The files will contain two "pools" of questions, each pool containing
+one question.
+
 ## Dependencies
+
+Requires Python >= 3.7.
 
 This project is written in python and currently requires the following packages, besides system packages. You should be able to install all of them with `pip install PACKAGENAME`, even on Windows.
 
@@ -30,14 +82,6 @@ This project is written in python and currently requires the following packages,
 TeX must also be installed to run the program, with both `latex` and `dvipng` on the `PATH`.
 
 Unlike the toastedcrumpets version, this program does not need the sympy/numpy python stack installed, which means it is easier to set up with vanilla python on Windows.
-
-## Usage
-
-This project reads a source file in a text-based format and produces a ZIP file of questions that can be uploaded to blackboard. To run it, run
-
-    python src/main.py SOURCEFILE
-
-This creates both a ZIP file, which you can upload to blackboard, and a HTML file with an overview of your questions. The names of the output files are taken from the `.filename` command in your source file, which also functions as the blackboard package name.
 
 ## File format
 
@@ -378,3 +422,38 @@ The number of the current run (starting at 0, going up to N-1 inclusive) is pass
     ENDTEMPLATE
 
 Note that `{{}}` in an f-string becomes `{}` in the question itself, which is what the "blanks" type question needs as a placeholder.
+
+## Similar projects
+
+- <https://www.cod.edu/it/blackboard/testgenerators.htm> lists several
+  test generators for Blackboard LMS, some now defunct. At least one is
+  available on GitHub at
+  <https://github.com/college-of-southern-idaho/blackboard-quiz-generator>,
+  but is unmaintained.
+ 
+- [gsileno/bbquiz](https://github.com/gsileno/bbquiz) is a Java-based
+  test generator for Blackboard LMS.
+
+- The [R](https://www.r-project.org) package
+  "[exams](https://www.r-exams.org)" will generate both PDF written
+  exams, and files which can be imported into LMSs such as Moodle,
+  Canvas, OpenOlat or Blackboard. Documentation is available at
+  <https://rdrr.io/rforge/exams/man/exams2blackboard.html>, and a GitHub
+  mirror of the code is available at <https://github.com/cran/exams>.
+
+- [quizdown](https://github.com/jjfiv/quizdown) lets you create
+  multiple-choice quizzes from a Markdown-like markup and export to
+  Moodle or HTML. Support for exporting to Blackboard is a
+  [work in progress](https://github.com/jjfiv/quizdown/issues/3).
+
+## More documentation
+
+- [How to import a created `.zip` file into Blackboard](docs/blackboard.md)
+- [Internal documentation for developers](docs/internal.md)
+- For developers: [adding a new question type](docs/question.md)
+
+
+
+<!--
+  vim: tw=72 :
+-->
