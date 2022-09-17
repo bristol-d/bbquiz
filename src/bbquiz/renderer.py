@@ -8,6 +8,8 @@ import shutil
 import random
 import time
 
+from importlib_resources import files
+
 from .mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
 # These helper classes have the correct attributes to be picked up by the XML templates.
@@ -36,8 +38,8 @@ class PoolResource:
         self.instructions = instructions
 
 def template_filename(name):
-    mydir = pathlib.Path(__file__).parent.absolute()
-    return str(mydir.joinpath('templates', name))
+    filepath = files('bbquiz.templates').joinpath(f'{name}.txt')
+    return str(filepath)
 
 class ResourceFileData:
     """
