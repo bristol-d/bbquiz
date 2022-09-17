@@ -1,4 +1,4 @@
-import jumbled
+import bbquiz.jumbled as jumbled
 import re
 
 class MultipleAnswerDropdown(jumbled.Jumbled):

@@ -5,7 +5,7 @@ import html
 import pathlib
 from mistletoe.span_token import SpanToken, RawText
 from mistletoe.html_renderer import HTMLRenderer
-import tex
+import bbquiz.tex as tex
 from mako.template import Template
 
 class InlineMath(SpanToken):

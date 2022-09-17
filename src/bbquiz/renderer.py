@@ -8,7 +8,7 @@ import shutil
 import random
 import time
 
-from mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
+from .mistletoe_latex import HTMLRendererWithTex, HTMLRendererWithTexForHTML
 
 # These helper classes have the correct attributes to be picked up by the XML templates.
 

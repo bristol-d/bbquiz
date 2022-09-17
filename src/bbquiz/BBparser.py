@@ -1,5 +1,5 @@
-import BBtypes as types
-import questions
+import bbquiz.BBtypes as types
+import bbquiz.questions as questions
 import re
 import os
 import io

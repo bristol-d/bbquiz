@@ -1,8 +1,8 @@
 from mako.template import Template
 import uuid
-from renderer import template_filename
+from .renderer import template_filename
 import re
-import question
+import bbquiz.question as question
 
 class Numeric(question.Question):
     def __init__(self):

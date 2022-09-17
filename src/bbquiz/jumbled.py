@@ -1,7 +1,7 @@
 from mako.template import Template
 import uuid
-from renderer import template_filename
-import question
+from .renderer import template_filename
+import bbquiz.question as question
 import re
 
 class JumbledOption:
