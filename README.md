@@ -1,22 +1,23 @@
 # Bristol Blackboard Quiz Maker
 
-Fork of <https://github.com/bristol-d/bbquiz> which is a fork of
-[toastedcrumpets/BlackboardQuizMaker][tc-bbqm]. The project, like the
-original, is released under the MIT licence.
-
-[tc-bbqm]: https://github.com/toastedcrumpets/BlackboardQuizMaker
-
 This project lets you write your blackboard quizzes in a text-based format instead of using the clunky user interface in blackboard. You can compile quiz files to ZIP packages that you can upload to blackboard, as well as create HTML overview files that you can use for example to show to your external examiner or other quality control people. The main features are:
 
   * A text-based format for quizzes.
   * Write your questions in markdown for emphasis, lists, paragraphs etc.
-  * Embed Tex formulas in your quizzes that are rendered as PNG images.
+  * Embed TeX formulas in your quizzes that are rendered as PNG images.
   * Rendered images are cached across runs to speed up the common use case where you repeatedly proofread, edit and recompile your quiz.
+
+Special thanks to:
+
+  - @toastedcrumpets for originally figuring out how to create blackboard ZIP format files with embedded image resources (this project started as a fork of their [BlackboardQuizMaker](https://github.com/toastedcrumpets/BlackboardQuizMaker)).
+  - @arranstewart for helping with packaging this project up so you can install it with `pip`.
+
+The project is released under the MIT licence.
 
 ## Installation
 
 ```
-$ python3 -m pip install https://github.com/arranstewart/bbquiz/archive/refs/heads/master.zip
+$ python3 -m pip install https://github.com/bristol-d/bbquiz/archive/refs/heads/master.zip
 ```
 
 Or, using `git` to fetch a full copy of the repository:
